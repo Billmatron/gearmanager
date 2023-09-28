@@ -32,6 +32,9 @@ class Model(models.Model):
 	def __str__(self):
 		return f"{self.id}: {self.name}"
 	
+	def to_dict(self):
+		data = {'name': self.name}
+		return data
 
 
 class Types(models.Model): 
