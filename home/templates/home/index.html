@@ -1,0 +1,76 @@
+{% extends "home/base.html" %}
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center my-3">Welcome to the Gear Manager</h1>
+<h5 class="text-center text-secondary">Inventory Managment for the owner/operator</h5>
+<hr>
+<div class="container mt-md-5 m-auto">
+    <div class="row row-flex gx-4 justify-content-between">
+
+        <div class="col-md-4 col-10 my-1 m-auto">
+            <div class="box border rounded bg-dark text-white">
+                <div class="pt-2 pb-2 text-center bg-danger text-white"><h2>Organize</h2></div>
+            
+                <div class="p-2">
+                    <ul class="">
+                        <li>All your gear in one place</li>
+                        <li>Keep Serial Numbers and Values</li>
+                        <li>Easily add any new pieces</li>
+                    </ul>
+                    
+                </div>
+            </div>
+            
+        </div>
+    
+        <div class="col-md-4 col-10 my-1 m-auto">
+            <div class="box border rounded bg-dark text-white">
+                <div class="pt-2 pb-2 text-center bg-warning text-white"><h2>Quote</h2></div>
+            
+                <div class="p-2 ">
+                    <ul class="">
+                        <li>Quickly add any gear item to a quote</li>
+                        <li>Create "kits" of gear items kept together</li>
+                        <li>Modify rates per quote</li>
+                        
+                    </ul>
+                </div>
+            </div>  
+        </div>
+    
+        <div class="col-md-4 col-10 my-1 m-auto">
+            <div class="box border rounded bg-dark text-white">
+                <div class="pt-2 pb-2 text-center bg-success text-white"><h2>Invoice</h2></div>
+            
+                <div class="p-2 ">
+                    <ul class="">
+                        <li>Get that cheddar!</li>
+                        <li>Turn a quote into an invoice with one click</li>
+                        <li>Keep track of what is still owed</li>
+                    </ul>
+                </div>
+            </div> 
+        </div>
+    
+    </div>
+</div>
+
+
+<div class="row justify-content-center m-auto mt-3">
+    <div class="text-center col-4">
+        <a class="m-auto" href=""">
+            <button class="text-center btn btn-primary">Sign In</button>
+        </a>
+    </div>
+    <div class="text-center col-4">
+        <a class="m-auto" href="">
+            <button class="text-center btn btn-primary">Register</button>
+        </a>
+    </div>
+</div>
+
+
+
+{% endblock %}

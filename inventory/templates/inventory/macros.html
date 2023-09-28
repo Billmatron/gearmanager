@@ -1,0 +1,536 @@
+{% macro inventoryTable(type, page) -%}
+
+    {# Make a list of Subtypes of inventory gear #}
+    {% set subtypes = [] %}
+        {% for tag in data.inventory%}
+            {# check for subtypes and only go through those #}
+            {% if tag.model.type.type == type %}
+                {% if tag.model.subtype.subtype not in subtypes %}
+                    {# append list with style, or "" to avoid a bunch of "Nones" for some reason #}
+                    {{  subtypes.append(tag.model.subtype.subtype) or "" }}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+    {# Create tabs from the list of Subtypes #}
+    <div id="{{ type }}" class="inventoryTable">
+        <div id="table-title" class=" text-secondary table-title">
+            {{ type | replace("_", " ") | upper }}
+        </div>
+        <div class="inv-tabs">
+            <ul id="tabs" class="nav nav-tabs justify-content-end">
+                {% for subtype in subtypes %}
+                    {% if loop.first %}
+                        <li class="nav-item inv-tab">
+                            {# <span class="marker p-2 bg-danger border border-light rounded-circle"></span> #}
+                            <a id="{{ subtype }}Tab" class="nav-link selectTab active first" onclick="tabSwitch(this, event)" aria-current="page" href="#{{ subtype }}Content">
+                                {{ subtype | titleFix }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item inv-tab">
+                            <a id="{{ subtype }}Tab" class="nav-link selectTab" onclick="tabSwitch(this, event)" aria-current="page" href="#{{ subtype }}Content">
+                                {{ subtype | titleFix}}
+                            </a>
+                        </li>
+                    {% endif %}
+            
+                {% endfor %}
+            </ul>
+        </div>
+
+    
+            {# Make a table of Inventory items #}
+            <table id="{{ type }}Table" class="table selectTable">
+            
+            <thead>
+                <th>QTY</th>
+                <th>UNIT</th>
+                <th>MOUNT</th>
+                {% if page == "inventory" or page == "quote" %}
+                    <th>RATE</th>
+                {% endif %}  
+                {% if page == "package" %}  
+                    <th class="text-end">In</th>
+                    <th>Package</th>
+                {% endif %}
+                {% if page == "quote" %}
+                    <th class="text-end">In</th>
+                    <th>Quote</th>
+                {% endif %}
+            </thead>
+
+            {% for subtype in subtypes %}
+                {% if loop.first %}
+                    <tbody id="{{subtype}}Content" class="selectedPage first">
+                {% else %}
+                    <tbody id="{{subtype}}Content" class="selectedPage d-none">
+                {% endif %}
+                {% for unit in data.inventory %}
+                    {% if unit.model.subtype.subtype == subtype %}
+                        
+                        {% if page == "inventory" or page == "quote"%}
+                        <tr product={{unit.id}} inv_qty={{unit.quantity}} pack_qty=0 quote_qty=0 page="quote">
+                        {% endif %}
+
+                        {% if page == "package"%}
+                        <tr product={{unit.id}} inv_qty={{unit.quantity}} pack_qty=0 quote_qty=0 page="package">
+                        {% endif %}
+                        
+                            <td>{{  unit.quantity }}</td>
+                            {# make a link that sends to model name to its own page.  Has to be done to the inventory id number, not model number #}
+                            <td>
+                                <a class="text-decoration-none" href="{{ url_for('inv.unitpage', unitNum=unit.id) }}">
+                                    {{  unit.model.make.name | titleFix }} {{ unit.model.model | titleFix }}
+                                </a>
+                            </td>
+                            <td>{{  unit.model.mount.mount | titleFix  }}</td>
+                            
+                            {% if page == "inventory" or page == "quote"%}
+                                {% if unit.rate %}
+                                    <td>{{  unit.rate | rate  }}</td>
+                                {% else %}
+                                    <td><a href="{{url_for('inv.unitpage', unitNum=unit.id)}}">TBD</a></td>
+                                {% endif %}
+                            {% endif %}
+                            {% if page == "package" or page == "quote"%}
+                                <td class="package-quantity text-end"></td>
+                                <td class="inventory-button-column">
+                                
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endif %} 
+                {% endfor %}
+                </tbody>
+            {%endfor%}
+            </table>
+    
+    </div>
+    
+    
+
+{% endmacro -%}
+
+
+ 
+{% macro inventoryTableSimple(type, page) -%}
+    {# Make a list of Subtypes of inventory gear #}
+    {% set subtypes = [] %}
+        {% for unit in data.inventory%}
+            {# check for subtypes and only go through those #}
+            {% if unit.model.type.type == type %}
+                {% if unit.model.subtype.subtype not in subtypes %}
+                    {# append list with style, or "" to avoid a bunch of "Nones" for some reason #}
+                    {{  subtypes.append(unit.model.subtype.subtype) or "" }}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {# create table holding div  this div id and class are important for javascript selectors #}
+        <div id="{{ type }}" class="inventoryTable">
+            {# create table header #}
+            <div class="row">
+                <div id="table-title" class="col-md-8 text-secondary desktop">
+                {{ type | replace("_", " ") | upper }}
+                </div>
+                <div class="col-md-4">
+                    <select name="{{type}}Select" onchange="inventory_select_change()" id="{{type}}Select" class="unit-selector form-control">
+                        <option value="full-list" selected >Full {{type | titleFix}} List</option>
+                        {% for subtype in subtypes %}
+                            <option value="{{subtype}}">{{subtype | titleFix}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+
+
+                {# Make a table of Inventory items #}
+            <table id="{{ type }}Table" class="table selectTable">
+            
+            <thead>
+                <th>QTY</th>
+                <th>UNIT</th>
+                <th class="desktop">TYPE</th>
+                <th class="desktop">MOUNT</th>
+                {% if page == "inventory" or page == "quote" %}
+                    <th>RATE</th>
+                {% endif %}  
+                {% if page == "inventory" %}
+                    <th>{# this is used hold a space for a "remove from inventory" button #}</th>
+                {% endif %}
+                {% if page == "package" %}  
+                    <th class="text-end">In</th>
+                    <th>Package</th>
+                {% endif %}
+                {% if page == "quote" %}
+                    <th class="text-end">In</th>
+                    <th>Quote</th>
+                {% endif %}
+            </thead>
+            <tbody>
+
+            {# Javascript poulated table body #}
+            </tbody>
+            </table>
+        </div>
+{% endmacro -%}
+
+
+
+
+
+
+
+{% macro packageTable(package_id) -%}
+    {# create a table that belongs in the Edit package page.  reading from package.to_dict() data Javascript will update the details #}
+    {# create the table header#}
+    <div id="package-table" class="packageTable">
+        <table id="edit-package-table" class="table selectTable">
+                <thead>
+                    
+                    <th>QTY</th>
+                    <th>UNIT</th>
+                    <th class="text-end">CATEGORY</th>
+                    <th></th>
+                    
+                </thead>
+        {# create table body #}
+            <tbody package={{package_id}}  class="table-body">
+                
+            </tbody>
+        </table>
+        <div class="text-end px-4 rate-math d-none">
+            <p>Total Rate if set as individual units: <span></span></p>
+        </div>
+    </div>
+    
+{% endmacro -%}
+
+
+
+
+
+
+
+{% macro packageTableClassic(contents) -%}
+
+    {# Make a list of Subtypes of inventory gear this will populate the tabs on top of the table#}
+    {% set typeTabs = [] %}
+    {% set subtypeTabs = [] %}
+        {% for content in contents %}
+            {% if "_" not in content.inventory.model.type.type %}
+                {% if content.inventory.model.type.type not in typeTabs %}
+                    {{  typeTabs.append(content.inventory.model.type.type) or ""  }}
+                {% endif %}
+                {% else %}
+                    {% if content.inventory.model.subtype.subtype not in subtypeTabs %}
+                        {{  subtypeTabs.append(content.inventory.model.subtype.subtype) or "" }}
+                    {% endif %}
+            {% endif %}
+            
+        {% endfor %}
+
+    {# Create tabs from the list of Types #}
+    {% if typeTabs | length > 0 %}
+        <div id="package-table" class="packageTable">
+            <ul id="type-tabs" class="nav nav-tabs justify-content-end">
+            {% for type in typeTabs %}
+                <li class="nav-item">
+                    {% if loop.first %}
+                        <a id="{{  type  }}Tab" class="nav-link selectTab active first" onclick="tabSwitch(this, event)" aria-current="page" href="#{{type}}Page">{{ type | titleFix }}</a>
+                    {% else %}
+                        <a id="{{  type  }}Tab" class="nav-link selectTab" onclick="tabSwitch(this, event)" aria-current="page" href="#{{type}}Page">{{ type | titleFix }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+
+        {# Make a table of Inventory items #}
+        <table id="{{type}}Page" class="table selectTable">
+            <thead>
+                <th>QTY</th>
+                <th>UNIT</th>
+                <th></th>
+            </thead>
+
+        {# for each type in list populate the table with just items of that type #}
+        {% for type in typeTabs %}
+            {% if loop.first %}
+                <tbody id="{{type}}Page" class="selectedPage first">
+            {% else %}
+                <tbody id="{{type}}Page" class="selectedPage d-none">
+            {% endif %}
+
+            {% for content in contents %}
+                {% if content.inventory.model.type.type == type %}
+                    <tr>
+                        <td>{{  content.quantity }}</td>
+                        <td>
+                            <a class="text-decoration-none" href="{{ url_for('inv.unitpage', unitNum=content.inventory.id) }}">
+                                {{  content.inventory.model.make.name | titleFix }} {{ content.inventory.model.model | titleFix  }}
+                            </a>
+                        </td>
+                        <td>
+                            {# <form action="" method="get">
+                                <input type="hidden" name="unit" value={{ content.inventory.model.id }}>
+                                <div class="add">
+                                    <button class="btn btn-danger subbtn" type="submit">-</button>
+                                    <select name="quantity" class="quantity d-none" id="">
+                                        {% for n in range(content.quantity) %}
+                                            <option value="{{ n +1  }}">{{ n + 1 }}</option>
+                                        {% endfor %}
+                                    </select> 
+                                </div>
+                            </form> #}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+            </tbody>
+           
+       </table>
+    
+        </div> 
+    {% endif %}
+
+    {% if subtypeTabs | length > 0 %}
+            <div class="packageTable">
+                <ul id="subtype-tabs" class="nav nav-tabs justify-content-end">
+                    {% for subtype in subtypeTabs %}
+                        <li class="nav-item">
+                            {% if loop.first %}
+                                <a id="{{  subtype }}Tab" class="nav-link selectTab active first" onclick="tabSwitch(this, event)" aria-current="page" href="#{{subtype}}Page">
+                                    {{ subtype | titleFix }}
+                                </a>
+                            {% else %}
+                                <a id="{{  subtype }}Tab" class="nav-link selectTab" onclick="tabSwitch(this, event)" aria-current="page" href="#{{subtype}}Page">
+                                    {{ subtype | titleFix }}
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            {# Make a table of Inventory items #}
+            <table id="subtypes-table" class="table selectTable">
+                <thead>
+                    {# <th>QTY</th>
+                    <th>UNIT</th>
+                    <th></th> #}
+                </thead>
+
+            {# for each type in list populate the table with just items of that type #}
+            {% for subtype in subtypeTabs %}
+                {% if loop.first%}
+                    <tbody id="{{subtype}}Page" class="selectedPage first">
+                {% else %}
+                    <tbody id="{{subtype}}Page" class="selectedPage d-none">
+                {% endif %}
+
+                {% for content in contents %}
+                    {% if content.inventory.model.subtype.subtype == subtype %}
+                        <tr>
+                            <td>{{  content.quantity }}</td>
+                            <td><a class="text-decoration-none" href="{{ url_for('inv.unitpage', unitNum=content.inventory.id) }}">{{  content.inventory.model.make.name | titleFix }} {{ content.inventory.model.model  | titleFix }}</a></td>
+                            <td>
+                                {# <form action="" method="get">
+                                    <input type="hidden" name="unit" value={{ content.inventory.model.id }}>
+                                    <div class="add">
+                                        <button class="btn btn-danger subbtn" type="submit">-</button>
+                                        <select name="quantity" class="quantity d-none" id="">
+                                            {% for n in range(content.quantity) %}
+                                                <option value="{{ n +1  }}">{{ n + 1 }}</option>
+                                            {% endfor %}
+                                        </select> 
+                                    </div>
+                                </form> #}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+                
+        </table>
+        
+        </div> 
+        {% endif %}
+
+        
+        
+
+{% endmacro -%}
+
+
+
+
+
+
+
+
+
+{% macro packageGroup(package) -%}
+    
+    {# accordion setup for package style #}
+            <div class="accordion my-4" id="{{ package.name }}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        {# accordion header #}
+                        <button class="accordion-button collapsed d-flex justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#a{{ package.id }}" aria-expanded="true" aria-controls="collapseOne">
+                            <div class="package-label">
+                                <div>{{package.quantity}}x  <span class="fw-bold">{{  package.name | title  }}</span> </div>
+                                <div class="me-2">{{  package.rate | rate }}/day</div>
+                            </div>
+                        </button>
+                        
+                    </h2>
+                    {# accordion body #}
+                    <div id="a{{ package.id }}" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#{{ package.name }}">
+                        <div package={{package.id}} class="accordion-body">
+                            
+                            {{  packageTable(package.id) }}
+                            <div class="ms-2">
+                                <a href="{{ url_for('pack.packageEdit', package_id=package.id) }}" class="button bt-primary">EDIT</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+{% endmacro -%}
+
+
+
+
+
+
+
+
+{% macro gearTableHeader(title) -%}
+     <div id="gear-container" class="container">
+        <div id="dashboard" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">{{ title }}</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                </div>
+                <select class="btn btn-sm btn-outline-secondary" name="gearlist" id="inventory-list-select">
+                    <option value="" selected disabled>Categories</option>
+                    <option value="fulllist">Full List</option>
+            
+                    <!-- Check for camera gear -->
+                    {% if data.camera %}
+                        <option value="camera">Camera</option>
+                    {% endif %}
+
+                    {% if data.lens %}
+                        <option value="lens">Lenses</option>
+                    {% endif %}
+                    
+                    <!-- check for monitor -->
+                    {% if data.specialty %}
+                        <option value="monitor">Monitor</option>
+                    {% endif %}
+
+                    <!-- check for specialty gear -->
+                    {% if data.specialty %}
+                        <option value="specialty">Specialty</option>
+                    {% endif %}
+
+                    <!-- check for audio gear -->
+                    {% if data.audio %}
+                        <option value="ge">Audio</option>
+                    {% endif %}
+
+                    <!-- check for lighting gear -->
+                    {% if data.grip%}
+                        <option value="lighting">Lighting</option>
+                    {% endif %}
+
+                    <!-- check for lighting gear -->
+                    {% if data.grip%}
+                        <option value="grip">Grip</option>
+                    {% endif %}
+            
+                    <!-- check for misc gear -->
+                    {% if data.misc %}
+                        <option value="misc">Misc</option>
+                    {% endif %}
+            
+                </select>
+            </div>
+        </div>
+    </div>
+
+      <script>
+      document.addEventListener("DOMContentLoaded", function(){
+            inventory_table_dropdown();
+        });
+        </script>
+{% endmacro -%}
+
+
+
+
+
+
+
+
+{% macro gearTableDisplay(data, page) -%}
+    {# display table for each category #}
+    {% if data.camera %}
+        {{ inventoryTableSimple("camera", page) }}
+        {% if data.camera_accessory%}
+            {{ inventoryTableSimple("camera_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.lens %}
+        {{ inventoryTableSimple("lens", page) }}
+        {% if data.lens_accessory %}
+            {{ inventoryTableSimple("lens_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.monitor %}
+        {{ inventoryTableSimple("monitor", page) }}
+        {% if data.monitor_accessory %}
+            {{ inventoryTableSimple("monitor_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.specialty %}
+        {{ inventoryTableSimple("specialty", page) }}
+        {% if data.specialty_accessory %}
+            {{ inventoryTableSimple("specialty_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.audio %}
+        {{ inventoryTableSimple("audio", page) }}
+        {% if data.audio_accessory %}
+            {{ inventoryTableSimple("audio_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.lighting %}
+        {{ inventoryTableSimple("lighting", page) }}
+        {% if data.lighting_accessory %}
+            {{ inventoryTableSimple("lighting_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.grip %}
+        {{ inventoryTableSimple("grip", page) }}
+        {% if data.grip_accessory %}
+            {{ inventoryTableSimple("grip_accessory", page) }}
+        {% endif %}
+    {% endif %}
+
+    {% if data.misc %}
+        {{ inventoryTableSimple("misc", page) }}
+        
+    {% endif %}
+{% endmacro -%}

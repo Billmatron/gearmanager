@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <!-- bootstrap css and javascript -->
+   <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+   <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"></script>
+    
+   <!-- bootstrap icon pack -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+   <!-- local favicon -->
+    <link rel="icon" href="/static/favicon.ico">
+    <!-- jsPDF Library -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js" integrity="sha512-ToRWKKOvhBSS8EtqSflysM/S7v9bB9V0X3B1+E7xo7XZBEZCPL3VX5SFIp8zxY19r7Sz0svqQVbAOx+QcLQSAQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- html2canvas library -->
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- local stylesheet -->
+    
+    <link rel="stylesheet" href="{% static 'inventory/styles.css' %}">
+    <!-- local javascript -->
+    <script type="text/javascript" src="{% static 'inventory/script.js'%}" defer></script>
+    <script type="text/javascript" src="{% static 'inventory/inventory-script.js'%}" defer></script>
+    {# <script type="text/javascript" src="{{ url_for('static', filename='quote-script.js') }}" defer></script> #}
+    {# <script type="text/javascript" src="{{ url_for('static', filename='package-script.js') }}" defer></script> #}
+    <title>GearList: {% block title%}{% endblock %}</title>
+</head>
+<body>
+  
+    <!-- NAV BAR UP TOP WITH HAMBURGER -->
+
+    <nav id="header" class="navbar fixed-top navbar-expand-md bg-dark shadow">
+        <a href="#" class="navbar-brand text-white col-md-3 col-lg-2 me-0 px-3">
+            {% if user %}
+                {{ user.company_name }}
+            {% endif %}
+        </a>
+        <button
+        type="button"
+        data-bs-toggle ="collapse" 
+        data-bs-target = "#sidebar-menu"
+        aria-controls = "false"
+        aria-label="Toggle navigation"
+        class="navbar-toggler navbar-dark">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+            
+            
+        <div id="navbar-top" class="collapse navbar-collapse justify-content-end">
+            <ul id="navbar-list" class="nav justify-content-end">
+                <li class="nav-item">
+                    <a href="" class="nav-link">Account</a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link">Sign Out</a>
+                </li>
+
+            </ul>
+
+        </div>
+        
+    </nav>
+    
+    <!-- Main Page -->
+    <div id="page-container" class="container-fluid">
+        <div class="row">
+            <!-- SIDEBAR -->
+            
+            <nav id="sidebar-menu" class="col-md-3 col-lg-2 mb-5 d-md-block bg-light sidebar collapse overflow-scroll">
+                <div class=" pt-3 overflow-scroll">
+                    
+                    {% if user %}
+                    {% if user.username == "admin" %}
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>ADMIN</span>
+                        <i class="bi bi-card-list"></i>
+
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Make Add
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Subtype Add
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Mount Add
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Model Add
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Model Edit
+                            </a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    {% endif %}
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>INVENTORY</span>
+                        <i class="bi bi-card-list"></i>
+
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Gear List
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Add Items
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>PACKAGES</span>
+                        <i class="bi bi-card-list"></i>
+
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Package List
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Create New Package
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>QUOTES</span>
+                        <i class="bi bi-card-list"></i>
+
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                All Quotes
+                            </a>
+                        </li>
+                        {# {% if session['quote_id']%} #}
+                            <li class="nav-item">
+                                <a href="" class="nav-link sideTab">
+                                    Current Quote
+                                </a>
+                            </li>
+                        {# {% endif %} #}
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Create Quote
+                            </a>
+                        </li>
+                    </ul>
+
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>INVOICES</span>
+                        <i class="bi bi-card-list"></i>
+
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                All Invoices
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="#" class="nav-link sideTab">
+                                Create Invoice
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>CLIENTS</span>
+                        <i class="bi bi-card-list"></i>
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Client List
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Add Client
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>ACCOUNT</span>
+                        <i class="bi bi-card-list"></i>
+                    </h6>
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a href="" class="nav-link sideTab">
+                                Account Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" class="nav-link">
+                                Sign Out
+                            </a>
+                        </li>
+                    </ul>
+                    
+                </div>
+            </nav>
+            
+            <!-- MAIN BODY -->
+            <main id="mainBody" class="col-md-9 ms-sm-auto col-lg-10 px-md-2">
+
+                {% if messages %}
+                    <ul class="flashes">
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+               
+
+                {% block content %} {% endblock %}
+            </main>
+    
+        </div>
+    </div>
+
+
+<script>
+    {# // const inventory_unit_page = "{{url_for('inv.unitpage', unitNum='UNITNUM')}}"; #}
+    {# // const inventory_query_url = "{{url_for('api.getInventory')}}"; #}
+    {# // const remove_inventory = "{{url_for('inv.removeUnit', unitNum='UNITNUM')}}"; #}
+</script>
+</body>
+</html>

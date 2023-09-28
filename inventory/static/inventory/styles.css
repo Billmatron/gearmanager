@@ -1,0 +1,380 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    /* rtl:raw:
+    right: 0;
+    */
+    bottom: 0;
+    /* rtl:remove */
+    left: 0;
+    z-index: 100; /* Behind the navbar */
+    padding: 48px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+  }
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: .5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+}
+.navbar-brand {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  font-size: 1.2rem;
+  background-color: rgba(0, 0, 0, .25);
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+  color: #fff;
+}
+main{
+      padding: 70px 0 0; 
+}
+
+.round-add {
+  display: flex;
+  align-content: space-between;
+  justify-content: center;
+  align-items: center;
+  
+  color: #fff;
+  border: 1px solid #fff;
+  font-size: 48px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  box-shadow: 2px 2px 10px #222;
+  
+
+}
+.round-add:before {
+  content: '\FF0B';
+}
+
+.round-add:hover {
+  height: 55px;
+  width: 55px;
+}
+
+.package-label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+
+.top-bar {
+  position: sticky;
+  top: 65px;
+  background-color: white;
+  z-index: 3;
+}
+
+.hover-btn {
+  background-color: transparent;
+}
+
+.hover-btn:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.dropdown-hover {
+  background-color: transparent;
+}
+
+.dropdown-hover:hover {
+  background-color: rgba(245, 240, 97, 1);
+}
+
+.choose-model td.check-box {width: 0%;}
+.choose-model td.qty {width: 10%;}
+.choose-model td.unit {width: 70%;}
+.choose-model td.subtype {width: 20%;}
+
+.hidden {
+  visibility: hidden;
+}
+
+.popup {
+  width: 40rem;
+  height: 20rem;
+  background-color: #dee2e6;
+  color: #212529;
+  border: 1px solid green;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.popup-success {
+  border: 3px solid green;
+}
+.popup-fail {
+  border: 3px solid #dc3545;
+}
+/* ************* NAV TABS ****** */
+
+
+.topTab {
+  margin-left: 0.5rem !important;
+  margin-right: 0.5rem !important;
+  background-color: gray !important;
+  color: white !important;
+}
+
+.topTab.active {
+  background-color: #0d6efd !important;
+  color: white !important;
+}
+
+.sideTab.active{
+  background-color: #0d6efd !important;
+  color: white !important;
+}
+/************ SWITCH ****************/
+#edit-switch{  /* this hides the checkbox */
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+.switch { /* this creates the outside area*/
+  display: inline-block;
+  width: 120px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid #0d6efd;
+  border-radius: 100px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.5s;
+  box-shadow: 0 0 20px #477a8550;
+  
+}
+
+.switch::after { /* this creates the ball*/
+  content: "";
+  width: 25%;
+  height: 30px;
+  background-color: #0d6efd;
+  position: absolute;
+  border-radius: 100%;
+  top: 5px;
+  left: 5px;
+  transition: 0.5s;
+}
+
+ .switch span { /* Controls the text inside */
+  color: #dc3545;
+  line-height: 35px;
+}
+
+input:checked + .switch span{
+  color: white;
+  content: "";
+}
+
+input:checked + .switch:after{ /* toggles animation */
+  left: calc(100% - 5px);
+  transform: translateX(-100%);
+}
+
+input:checked + .switch{
+  background-color: #dc3545;
+}
+
+.switchlabel{
+  
+  color: black;
+}
+
+.language-checkbox{
+  transform: scale(2);
+}
+
+/*************** RANDOM ***************/
+.highlighted {
+  background-color: rgba(245, 240, 97, 1);
+}
+
+.deactivated {
+  background-color: #fff;
+
+}
+
+.inventoryTable{
+  position: relative;
+}
+
+.table-title {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  font-weight: bold;
+  font-style: italic;
+  
+}
+
+.quantity {
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  background-color: transparent;
+  border: 1px solid transparent;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 1.5;
+  display: inline-block;
+  font-weight: 400;
+}
+
+.blank-button {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+.marker {
+  border: 1px solid red;
+  position: absolute;
+  top: 0;
+  left: 100;
+}
+
+.happy {
+  border-top: 2px solid red;
+}
+
+.user-bg-dark {
+  background-color: #222;
+}
+
+.user-text-white {
+  color: #fff;
+}
+
+.package-list {
+    
+  list-style-type: none;
+  margin-top: 0.15rem;
+  padding: 0;
+  /* padding-left: 0.75rem !important; */
+}
+.box {
+  
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+
+}
+.pdf-table {
+  --bs-table-bg: transparent;
+  --bs-table-accent-bg: transparent;
+  --bs-table-striped-color: #212529;
+  --bs-table-striped-bg: rgba(0, 0, 0, 0.05);
+  --bs-table-active-color: #212529;
+  --bs-table-active-bg: rgba(0, 0, 0, 0.1);
+  --bs-table-hover-color: #212529;
+  --bs-table-hover-bg: rgba(0, 0, 0, 0.075);
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+  vertical-align: top;
+  border-color: #dee2e6;
+  border-collapse: separate;
+}
+.pdf-table > :not(caption) > * > * {
+  padding: 0.5rem 0.5rem;
+  background-color: transparent;
+  border-bottom-width: 1px;
+  box-shadow: inset 0 0 0 9999px transparent;
+}
+.pdf-table > tbody {
+  vertical-align: inherit;
+}
+.pdf-table > thead {
+  vertical-align: bottom;
+}
+.pdf-table > :not(:first-child) {
+  border-top: 2px solid currentColor;
+}
+
+.tight-form {
+  padding: 0.25rem !important;
+  text-align: center;
+}
+.mobile {
+  display: none;
+}
+/* QUOTE EDIT PAGE */
+.edit-view {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+/* QUOTE EDIT TABLE */
+/* table widths */
+.quote-edit-unit{width: 35%;}
+.quote-edit-qty{width: 5%;}
+.quote-edit-rate{width: 15%;}
+.quote-edit-days{width: 10%;}
+.quote-edit-total{width: 15%;}
+.quote-edit-buttons{width: 15%;}
+
+/* LABOR EDIT TABLE */
+.labor-edit-title{width: 40%;}
+.labor-edit-hours{width: 20%;}
+.labor-edit-rate{width: 10%;}
+.labor-edit-days{width: 10%;}
+.labor-edit-total{width: 10%;}
+.labor-edit-btn{width: 10%;}
+
+.misc-edit-description{width: 50%;}
+.misc-edit-qty{width: 10%;}
+.misc-edit-rate{width: 10%;}
+.misc-edit-days{width: 10%;}
+.misc-edit-total{width: 10%;}
+.misc-edit-btn{width: 10%;}
+
+@media screen and (max-width: 480px) {
+  .choose-model td.check-box {width: 0%;}
+  .choose-model td.qty {width: 20%;}
+  .choose-model td.unit {width: 60%;}
+  .choose-model td.subtype {width: 10%;}
+
+  .popup {
+    width: 20rem;
+    height: 20rem;
+  }
+}
+
+/* MEDIA SCREEN FOR PHONE */
+@media screen and (max-width: 576px){
+  .detail-col{
+      width: 100%;
+  }
+  .mobile {display:block}
+  .desktop {display: none;}
+
+  .top-nav {
+    padding: 0px !important;
+    margin: 0px;
+  }
+  
+  .edit-view{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  .quote-edit-rate{width:25%;}  
+}
+
+/* MEDIA SCREEN FOR TABLET */
+@media screen and (max-width: 860px){
+
+}
