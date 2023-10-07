@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.contrib.postgres.fields import ArrayField
 
 import time
 
@@ -12,12 +12,12 @@ class Make(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	country = models.ForeignKey('home.Country', on_delete=models.CASCADE, related_name="makes", default=0)
 	#types_set
-	#models_set
+	#units_set
 	def __str__(self):
 		return f"{self.id}: {self.name}"
-	
 
-class Model(models.Model):
+
+class Unit(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	manual_link = models.CharField(max_length=200, default="")
 	weight_g = models.IntegerField(default=0)
@@ -39,7 +39,7 @@ class Model(models.Model):
 
 class Types(models.Model): 
 	name = models.CharField(max_length=100, unique=True)
-	model_list = models.ManyToManyField(Model)
+	unit_list = models.ManyToManyField(Unit, related_name='types',blank=True)
 	makes = models.ManyToManyField(Make)
 	icon = models.CharField(max_length=200, default = '')
 	#attributes_set
@@ -51,7 +51,7 @@ class Types(models.Model):
 
 class Subtypes(models.Model):
 	name= models.CharField(max_length=100, unique=True)
-	model_list = models.ManyToManyField(Model)
+	unit_list = models.ManyToManyField(Unit, related_name='subtypes', blank=True)
 	types = models.ManyToManyField(Types)
 
 	def __str__(self):
@@ -64,7 +64,7 @@ class Subtypes(models.Model):
 
 class Attributes(models.Model):
 	name = models.CharField(max_length=50, unique=True)
-	model_list = models.ManyToManyField(Model)
+	unit_list = models.ManyToManyField(Unit)
 	types = models.ManyToManyField(Types)
 	subtypes = models.ManyToManyField(Subtypes)
 	#inventory_set
@@ -73,11 +73,12 @@ class Attributes(models.Model):
 		return f"{self.id}: {self.name}"
 	
 class Inventory(models.Model):
-	model = models.ForeignKey(Model, on_delete=models.CASCADE, related_name="inventories")
+	unit = models.ForeignKey(Unit, on_delete=models.CASCADE, related_name="inventories")
+	make = models.ForeignKey(Make, on_delete=models.CASCADE, related_name="inventories")
 	quantity = models.IntegerField(default=1, null=False)
 	rate = models.IntegerField(default=0)
 	attributes = models.ManyToManyField(Attributes)
-	serial_number = models.CharField(max_length=100)
+	serial_number = ArrayField(models.CharField(max_length=30, blank=True))
 	label = models.CharField(max_length=200)
 	purchase_price = models.IntegerField(default=0)
 	notes = models.CharField(max_length=1000)
