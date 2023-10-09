@@ -1,6 +1,13 @@
+*{
+    box-sizing: border-box;
+    
+}
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
+}
+a {
+    text-decoration: none;
 }
 
 .body-spacer {
@@ -8,10 +15,16 @@ body {
     padding: 0.5rem;
     padding-top: 2rem;
 }
+
+:root {
+    --baseColor: white;
+    --accentColor: rgb(82, 119, 156);
+    --callToAction: rgb(236, 88, 59);
+}
 /* ********************************    HEADER    **************************** */
 header {
-    background-color: slategray;
-    color: white;
+    background-color: var(--accentColor);
+    color: var(--baseColor);
     position: fixed;
     top: 0;
     left: 0;
@@ -20,6 +33,7 @@ header {
     margin: auto;
     width: 100%;
     /* height: 60px; */  
+    box-shadow: 5px 5px 10px gray;
    
 }
 
@@ -37,7 +51,7 @@ header {
     padding-right: 1.5rem;
     list-style-type: none;
     overflow: hidden;
-    background-color: slategray;
+    background-color: var(--accentColor);
 }
 .navbar-links li {
     float: left;
@@ -45,7 +59,7 @@ header {
 }
 
 .navbar-links li a{
-    color: white;
+    color: var(--baseColor);
     padding: 14px 16px;
     text-decoration: none;
 }
@@ -53,8 +67,8 @@ header {
 /* ******************************    LOGIN PAGE ************************** */
 
 .form-container {
-    background-color: slategray;
-    color: white;
+    background-color: var(--baseColor);
+    color: var(--accentColor);
     padding-top: 1rem;
     padding-bottom: 1rem;
     margin: auto;
@@ -62,10 +76,68 @@ header {
     text-align: center;
     width: 30%;
     border-radius: 5%;
-    box-shadow: 5px 10px 15px grey;
+    box-shadow: 5px 10px 20px gray;
 
 }
-.form-container div {
+.input-container {
+    width: 75%;
+    margin: auto;
+    text-align: start;
+}
+.form-container label {
+    color: var(--accentColor);
+    font-variant: small-caps;
+    font-size: smaller;
+}
+.form-container input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background-color: var(--baseColor);
+    
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    border-bottom: 2px solid var(--callToAction);
+    margin-bottom: 2rem;
+}
+
+.form-container i {
+    position: absolute;
+  
+}
+
+.icon {
+    padding: 10px;
+    color: var(--callToAction);
+    min-width: 50px;
+    text-align: center;
+}
+
+.form-container input[type=submit]{
+    background-color: var(--callToAction);
+    border: none;
+    width: 75%;
+    border-radius: 50px;
+    box-shadow: 0px 8px 20px rgb(42, 42, 42);
+    margin-bottom: 50px;
+}
+
+.form-container input[type=submit]:hover {
+    cursor: pointer;
+    box-shadow: 0px 12px 20px rgb(42, 42, 42);
+}
+
+.form-container p {
+    font-size: x-small;
+    color: var(--accentColor);
+}
+::placeholder {
+    color: var(--callToAction);
+    opacity: 50%;
+    font-size: x-small;
     
 }
 /********************************    INVENTORY TABLE/GRID DISPLAY  ****************/

@@ -15,14 +15,19 @@ const Header = () => {
   
           <div className="navflex">
             <div>
-              {/* <p id="company-name">{user.user?.company_name}</p>  */}
-              <p>{user?.company}</p>
+              {user? <p>{user?.company}</p>: <h3>GEAR MANAGER</h3>}
+              
             </div>
             <div>
               <ul className='navbar-links'>
+                {user? 
+                <>
                 <li><Link to={`/inventory`}>Inventory</Link></li>
                 <li><Link to={`/units`}>All Gear</Link></li>
                 <li><Link to={`/`}>Home</Link></li>
+                </>:<li></li>
+              }
+                
                 
                 {user ? <li><Link onClick={logoutUser}>Logout</Link></li>: <li><Link to={`/login`}>LogIn</Link></li>}
               </ul>
