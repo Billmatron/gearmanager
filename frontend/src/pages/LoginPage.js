@@ -11,7 +11,7 @@ const LoginPage = () => {
     <Body>
         <div>
           <div>
-            <form className="form-container" onSubmit={loginUser}> 
+            <form className="form-container login" onSubmit={loginUser}> 
               <h2>Welcome!</h2>
               <div className='input-container'>
                 <div>

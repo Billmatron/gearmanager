@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
-from .models import Unit, Make, Inventory, Types, Subtypes
+from .models import Unit, Make, Inventory, Types, Subtypes, Attributes, Attributeclass
 
 
 
@@ -8,17 +8,31 @@ class MakeSerializer(ModelSerializer):
         model = Make
         fields = '__all__'
 
-class TypesSerializer(ModelSerializer):
-    class Meta:
-        model = Types
-        fields = ('name','id')
-
+    
 class SubtypesSerializer(ModelSerializer):
     class Meta:
         model = Subtypes
         fields = ('name',)
 
+class AttributeclassSerializer(ModelSerializer):
+    class Meta:
+        model=Attributeclass
+        fields = '__all__'
+class AttributeSerializer(ModelSerializer):
+    attribute_class = AttributeclassSerializer(read_only=True, many=False)
+    class Meta:
+        model=Attributes
+        fields=('id','name', 'attribute_class')
+
+
+class TypesSerializer(ModelSerializer):
+    subtypes = SubtypesSerializer(read_only=True, many=True)
+    class Meta:
+        model = Types
+        fields = ('name','id', 'subtypes')
+
 class UnitSerializer(ModelSerializer):
+    attributes = AttributeSerializer(read_only=True, many=True)
     make = MakeSerializer(read_only=True, many=True)
     types = TypesSerializer(read_only=True, many=True)
     subtypes = SubtypesSerializer(read_only=True, many=True)

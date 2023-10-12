@@ -1,5 +1,8 @@
 #specific files
 starterdata.py
+starterdata copy oct.py
+miles.py
+miles2.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

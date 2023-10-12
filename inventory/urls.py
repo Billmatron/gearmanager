@@ -11,4 +11,7 @@ urlpatterns = [
     path('inventory/', views.getInventory, name='inventory'),
     path('inventory/<str:type_name>', views.getInventoryFilter, name='inventory search'),
     path('inventory/<str:pk>', views.getInventoryItem, name='inventory item'),
+    path('types', views.getTypes, name='types'),
+    path('makes', views.getMakes, name='makes'),
+    path('units/make/<str:make>', views.getUnitsByMake)
 ]
