@@ -160,6 +160,10 @@ header {
     font-size: x-small;
     
 }
+
+.error-message{
+    color: red;
+}
 /********************************    INVENTORY TABLE/GRID DISPLAY  ****************/
 
 .lower-header {

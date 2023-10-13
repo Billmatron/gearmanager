@@ -12,24 +12,33 @@ class MakeSerializer(ModelSerializer):
 class SubtypesSerializer(ModelSerializer):
     class Meta:
         model = Subtypes
-        fields = ('name',)
-
-class AttributeclassSerializer(ModelSerializer):
-    class Meta:
-        model=Attributeclass
-        fields = '__all__'
+        fields = ('name', 'id')
 class AttributeSerializer(ModelSerializer):
-    attribute_class = AttributeclassSerializer(read_only=True, many=False)
+    
     class Meta:
         model=Attributes
         fields=('id','name', 'attribute_class')
 
+class AttributeclassSerializer(ModelSerializer):
+    attributes = AttributeSerializer(read_only=True, many=True)
+    class Meta:
+        model=Attributeclass
+        fields = ('id', 'name', 'attributes')
+
+
+# class AttributeSerializer(ModelSerializer):
+#     attribute_class = AttributeclassSerializer(read_only=True, many=False)
+#     class Meta:
+#         model=Attributes
+#         fields=('id','name', 'attribute_class')
+
 
 class TypesSerializer(ModelSerializer):
     subtypes = SubtypesSerializer(read_only=True, many=True)
+    attributeclass = AttributeclassSerializer(read_only=True, many=True)
     class Meta:
         model = Types
-        fields = ('name','id', 'subtypes')
+        fields = ('name','id', 'subtypes', 'attributeclass')
 
 class UnitSerializer(ModelSerializer):
     attributes = AttributeSerializer(read_only=True, many=True)
