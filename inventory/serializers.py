@@ -13,8 +13,14 @@ class SubtypesSerializer(ModelSerializer):
     class Meta:
         model = Subtypes
         fields = ('name', 'id')
+
+class AttributeForUnitSerializer(ModelSerializer):
+    class Meta:
+        model = Attributeclass
+        fields = ('name', 'id')
+
 class AttributeSerializer(ModelSerializer):
-    
+    attribute_class = AttributeForUnitSerializer(read_only=True, many=False)
     class Meta:
         model=Attributes
         fields=('id','name', 'attribute_class')
@@ -24,13 +30,6 @@ class AttributeclassSerializer(ModelSerializer):
     class Meta:
         model=Attributeclass
         fields = ('id', 'name', 'attributes')
-
-
-# class AttributeSerializer(ModelSerializer):
-#     attribute_class = AttributeclassSerializer(read_only=True, many=False)
-#     class Meta:
-#         model=Attributes
-#         fields=('id','name', 'attribute_class')
 
 
 class TypesSerializer(ModelSerializer):

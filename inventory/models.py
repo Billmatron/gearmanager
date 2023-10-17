@@ -74,6 +74,7 @@ class Subtypes(models.Model):
 class Attributeclass(models.Model):
 	name = models.CharField(max_length=50, unique=True)
 	types = models.ManyToManyField(Types, related_name='attributeclass')
+	
 
 class Attributes(models.Model):
 	name = models.CharField(max_length=50, unique=True)

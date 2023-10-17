@@ -53,15 +53,13 @@ export const AuthProvider = ({children}) => {
     let updateToken = async ()=>{
         let response = await fetch('/api/token/refresh', {
             method: 'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
+            headers:{'Content-Type':'application/json'},
             body:JSON.stringify({'refresh':authTokens?.refresh})
         })
         let data = await response.json()
 
         if (response.status === 200){
-            console.log("update Token called")
+            console.log("update Token called successfuly")
             setAuthTokens(data)
             setUser(jwt_decode(data.access))
             localStorage.setItem('authTokens', JSON.stringify(data))
@@ -83,7 +81,7 @@ export const AuthProvider = ({children}) => {
     
     }
 
-    // use refresh token to call for new access token every 4 minutes
+    // use refresh token to call for new access token every 4 minutes (1:37:00 into video tagged above)
     useEffect(()=> {
         if(loading){
             updateToken()

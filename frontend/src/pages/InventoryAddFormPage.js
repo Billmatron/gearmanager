@@ -6,8 +6,6 @@ import InventoryAddForm from '../components/forms/InventoryAddForm'
 const InventoryAddFormPage = () => {
 
     
-
-
   return (
     <Body>
         <InventoryAddForm/>

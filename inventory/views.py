@@ -81,6 +81,7 @@ def getUnitsByMake(request, make):
 @api_view(['POST'])
 def createNewUnit(request):
     item = request.data
+    print(item)
     newUnit = Unit(name=item['name'], manual_link=item['manual_link'], weight_g=item['weight_g'], value=item['value'])
     newUnit.save()
     newUnit.make.add(item['make'])
@@ -94,22 +95,25 @@ def createNewUnit(request):
     serializer = UnitSerializer(newUnit, many=False)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def addToInventory(request):
+
+    user = request.user
     item = request.data
-    user = User.objects.get(username=item['username'])
-    
+     
     unit = Unit.objects.get(pk=item['unit_id'])
     make = Make.objects.get(pk=item['make_id'])
-    print(item)
+    # print(item)
     newInventoryItem = Inventory(unit=unit, make=make, quantity=item['quantity'],
                                  rate=item['rental_price'], serial_number=item['serial_numbers'],
                                  purchase_price=item['purchase_price'], notes=item['notes'],
                                  user=user)
     newInventoryItem.save()
     for attribute in item['attributes']:
-        newInventoryItem.attributes.add(attribute['id'])
+        newInventoryItem.attributes.add(attribute)
     
-    
+    #unit = Unit.objects.get(pk=367)
     serializer = InventorySerializer(newInventoryItem, many=False)
     return Response(serializer.data)
