@@ -21,6 +21,7 @@ def getUnits(request):
     serializer = UnitSerializer(unit, many=True)
     return Response(serializer.data)
 
+# used on inventory add form
 @api_view(['GET'])
 def getUnit(request, pk):
     unit = Unit.objects.get(pk=pk)
@@ -69,9 +70,10 @@ def getMakes(request):
     return Response(x)
 
 
+# Used on inventory add form
 @api_view(['GET'])
-def getUnitsByMake(request, make):
-    make = Make.objects.filter(name=make).first()
+def getUnitsByMake(request, make_id):
+    make = Make.objects.filter(pk=make_id).first()
     units = make.units.all()
     serializer = UnitSerializer(units, many=True)
     return Response(serializer.data)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useContext } from "react";
 import { Link } from 'react-router-dom'
-import {UserContext, UserContextProvider} from '../context/UserContext'
+
 import AuthContext from '../context/AuthContext'
 
 const Header = () => {

@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useContext, useRef} from 'react'
+import React, { useState, useEffect, useContext, useRef, } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import {InputContainer, TextArea, TextInput, SearchField, SelectInput, NumInput} from './FormInputs'
+import {NextButton} from '../Buttons'
+import {FormCard, InstructionCard} from '../Cards'
 import AuthContext from '../../context/AuthContext'
 
 
@@ -8,49 +10,39 @@ const InventoryAddForm = () => {
     const [step, setStep] = useState(0)
     const [step0Make, setStep0Make] = useState(null)
     const [step0Unit, setStep0Unit] = useState(null) 
-    
-    const [globalError, setGlobalError] = useState(null)
+    const [step0NewUnitName, setStep0NewUnitName] = useState(null)
 
-    let [success, setSuccess] = useState(false)
     const {authTokens} = useContext(AuthContext)
+
     let navigate = useNavigate();
-    function handleNext(e){
-        console.log('next tapped')
-    }
-
-
+  
 
 // //////////////////   COMPONENTS ////////////////////////////////
 
-    let NextButton = ({onClick, title}) =>{
-        return(
-            <div className="mt1">
-            <button onClick={onClick}>
-                {title}
-            </button>
-        </div>
-        )
-        
-    }
+
 
     let AttributeSelectors = ({onChange, attributes}) => {
         return (
-            <div className="display-flex">
-                  
-                    {attributes?.map((attributeclass) => (
-                        <div key={attributeclass.name}className="input-container col-3">
-                            <div>
-                                <label htmlFor={attributeclass.name}>{attributeclass.name}</label>
+            <div className='attribute-selector-container'>
+                <h5>Select Attributes</h5>
+                <p className='helper-text'>Hold down 'control' or 'command' on Mac to select more than one</p>
+                <div className="display-flex wrap mt1">
+                    
+                        {attributes?.map((attributeclass) => (
+                            <div key={attributeclass.name}className="input-container col-3">
+                                <div>
+                                    <label htmlFor={attributeclass.name}>{attributeclass.name}</label>
+                                </div>
+                                <select name={attributeclass.name} id={attributeclass.name} multiple={true} onChange={onChange}>
+                                    {attributeclass?.attributes.map((attribute) =>(
+                                        <option key={attribute.name} value={attribute.id}>{attribute.name}</option>
+                                    ))}
+                            
+                                </select>
                             </div>
-                            <select name={attributeclass.name} id={attributeclass.name} multiple={true} onChange={onChange}>
-                                {attributeclass?.attributes.map((attribute) =>(
-                                    <option key={attribute.name} value={attribute.id}>{attribute.name}</option>
-                                ))}
                         
-                            </select>
-                         </div>
-                       
-                        ))}
+                            ))}
+                    </div>
                 </div>
         )
     }
@@ -61,9 +53,11 @@ const InventoryAddForm = () => {
         const [units, setUnits] = useState(null)
         const [selectedMake, setSelectedMake] =useState(null)
         const [selectedUnit, setSelectedUnit] = useState(null)
-        const [newElement, setNewElement] = useState(false)
         const [error, setError] = useState(null)
-        
+
+        // hold onto input from the Unit search bar
+        let inputRef = useRef()
+
         // start the component off by grabing all the makes from the database
         useEffect(() => {
         async function fetchMakes(){
@@ -78,19 +72,20 @@ const InventoryAddForm = () => {
 
 
         // when a user selects a make, setUnits to fill in the datalist of units
-        function handleMakesSelect(e){
-        
-            const makeName = e.target.value;
+        function handleMakesSelect(id, name){
+            const make_id = id;
+            //const make_id = e.target.value;
             
             makes.forEach((make)=>{
-                if (make.name == makeName){
+                if (make.id === make_id){
                     // set selected make on the global inventory form state
+                    setError(null)
                     setSelectedMake(make)
                 }
             })
             
-            const fetchUnits = async (makeName) =>{
-                let response = await fetch(`/api/gear/units/make/${makeName}`)
+            const fetchUnits = async (make_id) =>{
+                let response = await fetch(`/api/gear/units/make/${make_id}`)
                 let data = await response.json()
                 if(response.status === 200) {
                     // set all units of selected make on component state
@@ -98,125 +93,140 @@ const InventoryAddForm = () => {
                     setUnits(data)
                     
                     }else {
-                        console.log(`Failed to get ${makeName}`)
+                        console.log(`Failed to get ${make_id}`)
                     }
             }
-            fetchUnits(makeName);
+            fetchUnits(make_id);
             
             
             
         }
 
-        function handleUnitSelect(e){
-            const unitID = e.target.value;
+        function handleUnitSelect(id, name){
+            const unit_id = id;
             
-            if (unitID === 'new'){
+            
+            if (unit_id){
                 // set global state to indicate new element is being added
-                setNewElement(true);
-                return
-            } else {
+                setError(null)
+            
                 // function to grab the unit from the database if the user selects one that already exists
-                async function getUnit(unitID) {
-                    let response = await fetch(`/api/gear/units/${unitID}`)
+                async function getUnit(unit_id) {
+                    let response = await fetch(`/api/gear/units/${unit_id}`)
                     let data = await response.json()
                     if(response.status === 200){
-                        // set global inventory form state item
+                       
+                        setError(null)
                         setSelectedUnit(data);
                     
                     } else{
                         alert("Something wrong with unit select, sorry")
                     }
                 }
-                getUnit(unitID);
+                getUnit(unit_id);
                 
             }
         }
-
+        function handleRef(value){
+            inputRef.current = value;
+            
+        }
         function handleNext0(){
             if(!selectedMake){
-                setError("Must choose a make")
+                setError("Make Selection is Required")
                 return
             }
-            if (!newElement && !selectedUnit){
-                setError("must choose a model")
+            if (!inputRef.current && !selectedUnit){
+                setError("Model Selection is Required")
                 return
             }
-            if(newElement){
+            if (!selectedUnit && inputRef.current.length <8){
+                console.log(inputRef.current)
+                console.log(inputRef.current.length)
+                setError ("Model name should be longer")
+                return
+            }
+            
+            if(inputRef.current && !selectedUnit){
                 setStep0Make(selectedMake)
-                
+                setStep0NewUnitName(inputRef.current)
                 setStep(1)
-            } else {
+
+            }
+            
+             else {
+             
                 setStep0Make(selectedMake)
                 setStep0Unit(selectedUnit)
                 setStep(2)
             }
             
         }        
-
+        
         return (
-        <>
-                <p>1.  Pick a brand, and tell us the name of the unit.</p>
-                {error && <span className='error-message'>{error}</span>}
-
-                <div className="display-flex">
-                    <div className="input-container">
-                        <div>
-                            <label htmlFor="makes-select">Make</label>
-                        </div>       
-                        <div>
-                            <select onChange={handleMakesSelect} name="makes-slect" id="makes-select" defaultValue={selectedMake? selectedMake.name:'Choose'}>
-                                <option key='1' value="Choose" disabled={true}>Choose your Brand</option>
-                                {makes?.map((make) => (
-                                <option key={make.id} value={make.name}>{make?.name}</option>
-                                ))} 
-                            </select>
-                        </div>
-
-                    </div>    
+   
+                <FormCard error={error}>
+                    <InputContainer label="Make">
+                    {makes &&
+                        <SearchField
+                            label='Make'
+                            placeholder={'Search for manufacturers'}
+                            searchElement={makes}
+                            finishFunction={handleMakesSelect}
+                            />
+                    }
+                    </InputContainer>
+                    {units && 
+                        <InputContainer label="Model">
+                        
+                        <SearchField
+                                label='Model'
+                                placeholder={'Search for a model'}
+                                searchElement={units}
+                                finishFunction={handleUnitSelect}
+                                setGlobalItem={handleRef}
+                                />
+                            {/* <SelectInput
+                                onChange={handleUnitSelect}
+                                defaultValue={selectedUnit? selectedUnit.id:'Choose'}
+                                disabledText={"Choose your model"}
+                                iterableElement={units}
+                                label = "Model" 
+                                endselector={<><option value="new">Something New</option></>}/> */}
+                        </InputContainer>
+                    }
                     
-
-                    <div className="input-container">
-                            <div>
-                                <label htmlFor="unit-name">Model</label>
-                            </div>
-                            <div>
-                                
-                                <select onChange={handleUnitSelect}name="unit-name" id="unit-name" defaultValue={selectedUnit? selectedUnit: 'Choose'}>
-                                    <option value="Choose" disabled={true}>Choose a Model</option>
-                                    {units?.map((unit) => (
-                                        <option key={unit.id} value={unit.id}>{unit?.name}</option>
-                                    ))}
-                                    {selectedMake?  <><option value='new'>Something Else</option></>:   <></> }
-                                </select>
-                                
-                            </div>
-                    </div>
-                    
-
-                </div>
-                <NextButton onClick={handleNext0} title={"Next"}/>
-            </>
-               
+                    <NextButton onClick={handleNext0} title={"Next"} classAdd={'next'}/>
+                </FormCard>
     )}
+
+
 
     let Step1 = (props) => {
 
         const [error, setError] = useState(null)
         const [types, setTypes] = useState(null)
-        let [selectedType, setSelectedType] = useState(null)
+        const [selectedType, setSelectedType] = useState(null)
         const [subtypes, setSubtypes] = useState(null)
-        let [selectedSubtype, setSelectedSubtype] = useState(null)
-        let [attributes, setAttributes] = useState(null)
-        let [weightUnit, setWeightUnit] = useState(453) //set for pounds to be first up
-
-        const newUnitRef = useRef(undefined);
-        const valueRef = useRef('0')
-        const weightRef = useRef('0')
-        const manualRef = useRef(undefined);
+        const [selectedSubtype, setSelectedSubtype] = useState(null)
+        const [attributes, setAttributes] = useState(null)
+        const [weightUnit, setWeightUnit] = useState(453) //set for pounds to be first up
+        const [newUnitName, setNewUnitName] = useState()
+        const [value, setValue] = useState(0)
+        const [manualLink, setManualLink] = useState('')
+        const [weight, setWeight] =useState(0)
+        
+        
         const attributeRef = useRef()
         
+        const weight_units = [{name:'lbs', id:453},
+                            {name:'kgs', id:1000},
+                            {name:'g', id:1},
+                            {name:'oz', id:28}]
+
         // get all the initial types to start the system off
         useEffect(()=>{
+            
             // function to grab all the types and subtypes
             async function getTypes(){
                 let response = await fetch(`/api/gear/types/${props.make.name}`)
@@ -230,7 +240,7 @@ const InventoryAddForm = () => {
             }
             getTypes()
     
-        }, [])
+        }, [props.make.name])
 
         let postNewUnit = async(newUnit) => {
             let response = await fetch('/api/gear/newunit/create',
@@ -243,7 +253,6 @@ const InventoryAddForm = () => {
             
             if(response.status === 200){
                 let data = await response.json()
-                console.log(data)
                 // add the created unit to the state of the top level component
                 setStep0Unit(data);
             } else {
@@ -256,14 +265,14 @@ const InventoryAddForm = () => {
         function handleTypeSelect(e){
             
             types.forEach((type) => {
-                if(type.name === e.target.value){
+                if(type.id === e.target.value){
                     setSubtypes(type.subtypes);
                     setSelectedType(type);
                     setAttributes(type.attributeclass)
                     console.log(type)
                     // create attributeRef container for future updates
                     type.attributeclass.forEach((attribute)=>{
-                        attributeRef[attribute.name] = new Array()
+                        attributeRef[attribute.name] = []
                     })
                     attributeRef["current"] = []
                     
@@ -275,17 +284,13 @@ const InventoryAddForm = () => {
         function handleSubtypeSelect(e){
             subtypes.forEach((subtype) => {
                 //console.log(subtype.name)
-                if(subtype.name === e.target.value){
+                if(subtype.id === e.target.value){
                     setSelectedSubtype(subtype)  
                 }
             })
         }
 
-        function handleWeightUnit(e){
-            setWeightUnit(e.target.value)
-        }
 
-        
 
         function handleAttributeSelector(e){
             // ref framework was created earlier with the type selector
@@ -302,7 +307,7 @@ const InventoryAddForm = () => {
                     setError("must pick a type and subtype")
                     return
                 }
-                if (newUnitRef.current.value.length < 10){
+                if (newUnitName < 10){
                     setError('Unit name is too short to be real, bro.')
                     return
                 }
@@ -321,11 +326,11 @@ const InventoryAddForm = () => {
             })
         
             //setup data for a new unit to pass to the database 
-            let newUnit = {name: newUnitRef.current.value,
+            let newUnit = {name: newUnitName,
                             make: props.make.id,
-                            value: valueRef.current.value * 100,
-                            weight_g: weightRef.current.value * weightUnit,
-                            manual_link: manualRef.current.value,
+                            value: value * 100,
+                            weight_g: weight * weightUnit,
+                            manual_link: manualLink,
                             attributes: attributeArray,
                             type: selectedType.id,
                             subtype: selectedSubtype.id}
@@ -334,111 +339,87 @@ const InventoryAddForm = () => {
             postNewUnit(newUnit);
             setStep(2);    
         }
-
+        
         return (
             <>
-            <h4>New thing from {props.make.name}</h4>
-            <p>Before we add it to your inventory, lets get some basic info first</p>
-            {error? <p className='error-message'>{error}</p>: <></>}
-            
-            <div className="display-flex">
-                <div className="input-container col-11 mt1 mb1">
-                    <div>
-                        <label  htmlFor="new-unit">Model Name</label>
-                    </div>
-                    <div>
-                        <input
-                        type="text" name="new-unit" id="new-unit" 
-                        ref={newUnitRef}
-                        placeholder='Type the model name of your new piece of gear' />
-                    </div>
-                    {error && <span className='error-message text-center'>{error}</span>}
+            <FormCard error={error} cardTitle={`New item from ${props.make.name}`}>
+                <InputContainer label='New Model Name'>
+                    <TextInput
+                        label="New Model Name"
+                        placeholder={"name of the model to add"}
+                        setValue={props.newUnit}
+                        onChange={(e)=>{setNewUnitName(e.target.value)}}
+                    />
+                </InputContainer>
                 
-                </div>
-            </div>
-            <div className="display-flex">
-                <div className="input-container col-5">
-                    <div>
-                        <label htmlFor="type">Type</label>
+                <InputContainer label='Category'>
+                    <SelectInput
+                        onChange={handleTypeSelect}
+                        defaultValue={selectedType? selectedType.name:"Choose"}
+                        disabledText="What is it?"
+                        iterableElement={types}
+                        label='Category'
+                    />
+                </InputContainer>
+                <InputContainer label='Subtype'>
+                    <SelectInput
+                        onChange={handleSubtypeSelect}
+                        defaultValue={selectedSubtype? selectedSubtype.name:"Choose"}
+                        disabledText="What is it?"
+                        iterableElement={subtypes}
+                        label="Subtype"
+                    />
+                </InputContainer>
+
+                <div className="input-container">
+                    <div className="display-flex justify-around">
+                        <InputContainer label='Value' classAdd={'col-4'}>
+                            <NumInput
+                                onChange={(e)=>setValue(e.target.value)}
+                                label='Value'
+                                defaultValue={value}/>
+                        </InputContainer>
+                        <InputContainer label='Weight' classAdd={'col-4'}>
+                            <div className="display-flex">
+                                <NumInput
+                                    onChange={(e)=>setWeight(e.target.value)}
+                                    label='Weight'
+                                    defaultValue={weight}/>
+                                <SelectInput
+                                    onChange={(e)=>setWeightUnit(e.target.value)}
+                                    iterableElement={weight_units}
+                                    label='weight_unit'
+                                />
+
+                            </div>
+                        
+                        </InputContainer>
                     </div>
-                    <div>
-                        <select name="type" id="type" defaultValue={selectedType? selectedType.name:'Choose'} onChange={handleTypeSelect}>
-                            <option key='typekey' value="Choose" disabled={true}>What is it?</option>
-                                {types?.map((type) => (
-                                <option key={type.name} value={type.name}>{type?.name}</option>
-                                ))} 
-                        </select>
-                    </div>
+                    
                 </div>
 
-                <div className="input-container col-5">
-                    <div>
-                        <label htmlFor="subtype">Subtype</label>
-                    </div>
-                    <div>
-                        <select name="subtype" id="subtype" defaultValue={selectedSubtype? selectedSubtype: 'Choose'} onChange={handleSubtypeSelect}>
-                        <option key='subtypekey' value="Choose" disabled={true}>What kind?</option>
-                                {subtypes?.map((subtype) => (
-                                <option key={subtype.name} value={subtype.name}>{subtype?.name}</option>
-                                ))} 
-                        </select>
-                    </div>
-                </div>
-            </div>
+                <InputContainer label="Manual Link">
+                    <TextInput
+                        label='Manual Link'
+                        placeholder='http://UserManual.com'
+                        onChange={(e)=>setManualLink(e.target.value)}/>
+                </InputContainer>
 
+                {selectedType &&
+                
+                    <AttributeSelectors onChange={handleAttributeSelector} attributes={attributes}/>
+                   
+                }
+                <div className='display-flex justify-center'>
+                    <div className="me2">
+                    <NextButton onClick={()=>setStep(0)} title={"Previous"} classAdd='previous' />
+                    </div>
+                
+                    <NextButton onClick={handleNext1} title={"Add to Database"} classAdd='next'/>
+                </div>
+            </FormCard>
             
             
-                
-            <div className="display-flex">
-                <div className="input-container col-1">
-                    <div>
-                        <label htmlFor="value">Value</label>
-                    </div>
-                    <div>
-                        <input type="number" ref={valueRef} name="value" id="value" defaultValue={0} />
-                    </div>
-                </div>
-
-                <div className="input-container col-3">
-                    <div>
-                        <label htmlFor="weight">Weight</label>
-                    </div>
-                    <div className='display-flex'>
-                        <input type="number" name="weight" id="weight" ref={weightRef} defaultValue={0} />
-                        <select name="weight_unit" id="weight_unit" onChange={handleWeightUnit}>
-                            <option value="453">lbs</option>
-                            <option value="1000">kg</option>
-                            <option value="1">g</option>
-                            <option value="28">oz</option>
-                        </select>
-                    </div>
-                </div>
-
-                
-            </div>
-
-            <div className="display-flex">
-                <div className="input-container col-10">
-                    <div>
-                        <label htmlFor="manual-link">Manual Link</label>
-                    </div>
-                    <div>
-                    <input type="text" name="manual-link" id="manual-link" ref={manualRef} placeholder='http://mymanual.com' />
-                </div>
-                </div>
-                
-            </div>
-
-            {selectedType? 
-                <AttributeSelectors onChange={handleAttributeSelector} attributes={attributes}/>:<></>
-            }
-            <div className='display-flex justify-center'>
-                <div className="me2">
-                <NextButton onClick={()=>setStep(0)} title={"Previous"} />
-                </div>
-            
-            <NextButton onClick={handleNext1} title={"Add to Database"} />
-            </div>
             
             </>
         )
@@ -446,24 +427,21 @@ const InventoryAddForm = () => {
 
 
 
-
-
-
-
-
     let Step2 = (props) => {
-        const {user, logoutUser }= useContext(AuthContext);
+        
         const [limitedAttributes, setLimitedAttributes] = useState()
         const [multiAttributes, setMultiAttributes] = useState()
-        const serialRef = useRef(undefined);
-        const quantityRef = useRef(1);
-        const purchaseRef = useRef(0);
-        const rentalRef = useRef(0);
-        const notesRef = useRef(undefined);
+        const [error, setError] = useState(null)
+        const [serial, setSerial] = useState("")
+        const [quantity, setQuantity] = useState(1)
+        const [purchasePrice, setPurchasePrice] = useState(props.unit?.value / 100)
+        const [rentalRate, setRentalRate] = useState((props.unit?.value / 100)/10)
+        const [notes, setNotes]= useState("")
+       
         let multiAttributeRef = useRef({current:[]})
         useEffect(()=>{
             alterAttributes(props.unit.attributes)
-        }, [])
+        }, [props.unit.attributes])
 
         function alterAttributes(unitAttributes){
             //console.log(props.unit)
@@ -508,22 +486,24 @@ const InventoryAddForm = () => {
 
         let addToInventory = async(newInv, again) => {
             
-            // let response = await fetch('/api/gear/newinventory',
-            //     {method: 'POST',
-            //     headers: {'Content-Type': 'application/json',
-            //             'Authorization':'Bearer ' + String(authTokens.access)},
-            //     body: JSON.stringify(newInv)
-            // })
-            // if (response.status === 200){
-            //     let data = await response.json()
+            let response = await fetch('/api/gear/newinventory',
+                {method: 'POST',
+                headers: {'Content-Type': 'application/json',
+                        'Authorization':'Bearer ' + String(authTokens.access)},
+                body: JSON.stringify(newInv)
+            })
+            if (response.status === 200){
                 
-            //     navigate('/inventory')
+                if (again){
+                    setStep(0)
+                } else{navigate('/inventory')}
                 
-            // }
+            } else{
+                setError(true)
+                alert("something went wrong with addToInventory")
+            }
 
-            if (again){
-                setStep(0)
-            } else{navigate('/inventory')}
+            
             
         }
     
@@ -557,11 +537,11 @@ const InventoryAddForm = () => {
                 let data = {
                     make_id: step0Make.id,
                     unit_id: step0Unit.id,
-                    purchase_price: purchaseRef.current.value * 100,
-                    serial_numbers: serialRef.current.value.split(','),
-                    rental_price: rentalRef.current.value * 100,
-                    notes: notesRef.current.value,
-                    quantity: quantityRef.current.value * 1,
+                    purchase_price: purchasePrice * 100,
+                    serial_numbers: serial.split(','),
+                    rental_price: rentalRate * 100,
+                    notes: notes,
+                    quantity: quantity * 1,
                     attributes: attributeArray
                     
                     
@@ -576,62 +556,65 @@ const InventoryAddForm = () => {
 
         return (
             <>
-            <h4>{props.make.name} {props.unit?.name}</h4>
+            
             
                 
-                <p>Tell us a few things about this item and you're all set.</p>
+                <FormCard error={error} cardTitle={`${props.make.name} ${props.unit?.name}`}>
                 
-                <div className="display-flex">
-                    <div className="input-container col-1">
-                        <div>
-                            <label htmlFor="quantity">QTY?</label>
+                    
+                        <div className="display-flex justify-around">
+                            <InputContainer label='Quantity' classAdd='col-2'>
+                                <NumInput
+                                    label='Quantity'
+                                    defaultValue={quantity}
+                                    onChange={(e)=>setQuantity(e.target.value)}
+                                    />
+                            </InputContainer>
+                            <InputContainer label='Purchase Price' classAdd='col-3'>
+                                <NumInput
+                                    label='Purchase Price'
+                                    onChange={(e)=>setPurchasePrice(e.target.value)}
+                                    defaultValue={purchasePrice}
+                                    front='$'
+                                />
+                            </InputContainer>
+                            <InputContainer label='Rental Rate' classAdd='col-3'>
+                                <NumInput
+                                    label='Rental Rate'
+                                    onChange={(e)=>setRentalRate(e.target.value)}
+                                    defaultValue={rentalRate}
+                                    front='$'
+                                    back='/day'
+                                />
+                            </InputContainer>
+                            
                         </div>
-                        <div>
-                            <input type="number" name="quantity" id="quantity" ref={quantityRef} defaultValue='1' />
-                        </div>
-                    </div>
-                    <div className="input-container col-5">
-                        <div>
-                            <label htmlFor="serials">Serial #</label>
-                        </div>
-                        <div>
-                            <input type="text" name="serials" id="serials" ref={serialRef}  placeholder="enter serial #'s separated by ','" />
-                        </div>
-                    </div>
+                            
+                        <InputContainer label='Serial #s' classAdd='col-11'>
+                                <TextInput
+                                    label="Serial"
+                                    onChange={(e)=>setSerial(e.target.value)}
+                                    placeholder={'enter serial #s separated by commas'}
+                                    />
+                        </InputContainer>
+                      
 
-                    <div className="input-container col-2">
-                        <div>
-                            <label htmlFor="purchase-price">OG Cost?</label>
-                        </div>
-                        <div>
-                            <input type="number" name="purchase-price" id="purchase-price" ref={purchaseRef} defaultValue={props.unit?.value / 100} />
-                        </div>
-                    </div>
-                    <div className="input-container col-2">
-                        <div>
-                            <label htmlFor="rental-rate">Rental Rate</label>
-                        </div>
-                        <div>
-                            <input type="number" name="rental-rate" id="rental-rate" ref={rentalRef} defaultValue={(props.unit?.value / 100)/10} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="display-flex">
-                    <div className="input-container col-9">
-                        <div>
-                            <label htmlFor="notes">Notes</label>
-                        </div>
-                        <div>
-                            <textarea name="notes" id="notes" cols="50" rows="5" ref={notesRef} placeholder='puchase location, order number, etc...'></textarea>
-                        </div>
-                    </div>
-                </div>
-                {props.unit? 
-                    <AttributeSelectors onChange={handleAttributes} attributes={multiAttributes}/>:<></>
-                }
-                <NextButton onClick={()=>handleInventoryForm("done")} title={'Add to Inventory'} />
-                <NextButton onClick={()=>handleInventoryForm("again")} title={'Add to Inventory and Add Another'} />
+                    <InputContainer label='Notes' classAdd='col-11'>
+                        <TextArea
+                            placeholder={'purchase location, order number, etc'}
+                            label="Notes"
+                            onChange={(e)=>setNotes(e.target.value)}
+                            />
+                    </InputContainer>
+                    {props.unit && 
+                        <AttributeSelectors onChange={handleAttributes} attributes={multiAttributes}/>
+                    }
+                    <NextButton onClick={()=>handleInventoryForm("done")} title={'Add to Inventory'} classAdd={'next'}/>
+                <NextButton onClick={()=>handleInventoryForm("again")} title={'Add to Inventory and Add Another'} classAdd={'next'}/>
+                </FormCard>
+                
+                
+                
                
                 </>
             
@@ -639,32 +622,60 @@ const InventoryAddForm = () => {
           
         )
     }
+
+
+
+
+
     return (
         
+        <main className='display-flex justify-evenly'>
+            
+                {step === 0 && 
+                <>
+                    <InstructionCard
+                    title="Lets Add a Toy!"
+                    step1="Search for a brand"
+                    step2="If you don't see the model, we can add a new one"/>
+                    <div className="col-7">
+                        <Step0 />
+                    </div>
+                    
+                </>
+                    
+                }
+
+                {step === 1 &&
+                <>
+                    <InstructionCard
+                        title="Add a New Model"
+                        step1="We have to add this one to the database first"
+                        step2="Fill out as much as you can, it is very helpful later on"
+                    />
+                    <div className="col-7">
+                        <Step1 make={step0Make} newUnit={step0NewUnitName}/>
+                    </div>
+                    
+                </>
+                
+                
+                }
+                {step === 2 &&
+                <>
+                <InstructionCard
+                    title="Inventory Specifics"
+                    step1="Separate Serials by a comma"/>
+                <div className="col-7">
+                    <Step2 make={step0Make} unit={step0Unit} />
+                </div>
+                
+                </>
+                    
+                }
+
+         
+        </main>
         
-        <div className='form-container invadd'>
-            <h2>Add an item</h2>
-            {step === 0 && 
-                <Step0 />
-            }
-
-            {step === 1 &&
-            
-               <Step1 make={step0Make}/>
-             
-            }
-            {step === 2 &&
-                <Step2 make={step0Make} unit={step0Unit} />
-            }
-
-        
-            
-            
-            
-            
-
-
-        </div>
         
             
         
