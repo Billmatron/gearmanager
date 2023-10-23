@@ -252,13 +252,15 @@ header {
 }
 /********************************    INVENTORY TABLE/GRID DISPLAY  ****************/
 
+
+
 .lower-header {
     display: flex;
     position: static;
 }
 .inventory-grid-container {
     display: grid;
-    grid-template-columns: 5% 45% 10% 10% 20% 10%;
+    grid-template-columns: 5% 30% 10% 10% 10% 20% 10%;
     padding: 10px;
 }
 .inventory-grid-item {

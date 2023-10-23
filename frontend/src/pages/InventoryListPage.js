@@ -3,6 +3,8 @@ import Body from '../components/Body'
 import {InventoryListItem} from '../components/ListItem'
 import AuthContext from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import {SearchField} from '../components/forms/FormInputs'
+import {cleanInventory} from '../utils/helpers'
 
 
 
@@ -11,10 +13,16 @@ const InventoryListPage = () => {
     let [inventory, setInventory] = useState([]);
     let [types, setTypes] = useState(new Set())
     let [selectedType, setSelectedType] = useState("all");
+    const [searchInput, setSearchInput] = useState("")
+    const [searched, setSearched] = useState(false)
     let {authTokens, logoutUser} = useContext(AuthContext)
-
+    const [filteredData, setFilteredData] = useState([])
     useEffect(()=>{ getInventory()}, []);
-
+    useEffect(()=>{
+      console.log("running useeffect")
+      
+  
+    }, [searchInput])
     let getInventory = async () => {
         let response = await fetch("/api/gear/inventory", {
                         method:'GET',
@@ -25,7 +33,15 @@ const InventoryListPage = () => {
         let data = await response.json()
         if(response.status === 200){
          
-          setInventory(data)
+          setInventory(cleanInventory(data))
+          //create set of types that are in inventory
+          let tSet = new Set()
+          data.forEach((item) => {
+            tSet.add(item.unit.types[0].name)
+          })
+
+          setTypes(tSet)
+          
         } else if(response.statusText === 'Unauthorized'){
           logoutUser()
         }
@@ -33,18 +49,9 @@ const InventoryListPage = () => {
         
 
 
-        //create set of types that are in inventory
-        let tSet = new Set()
-        data.forEach((item) => {
-          tSet.add(item.unit.types[0].name)
-        })
-
-        setTypes(tSet)
+        
     }
 
-
-      
-    
     // function to create new inventory state by filtering on selected type
     let typeSort = async (type) => {
      
@@ -54,21 +61,47 @@ const InventoryListPage = () => {
         let response = await fetch(`/api/gear/inventory/${type}`)
         let data = await response.json()
         
-        setInventory(data);
+        setInventory(cleanInventory(data));
       }
       setSelectedType(type);
     }
 
+    const handleChange = (e)=>{
+        
+      e.preventDefault();
+      setSearchInput(e.target.value);
+      
+      
+      if(e.target.value.length >=1){
 
+          setSearched(true)
+          setFilteredData(inventory?.filter((element)=>{
+            if (searchInput === ""){return element}
+            else{
+                return element.name.toLowerCase().includes(searchInput.toLowerCase())
+            }
+        }))
 
+      }
+      else{setSearched(false)}
+      
+  }
+
+  
     
   return (
     <Body>
       {/* create a nav bar with buttons for type of inventory unit */}
       <div className="lower-header">
         <div className='form-grid'>
-            <div><i className="fa fa-solid fa-baskeball"></i></div> 
-            <input type="text" name="search-text" id="search-text" placeholder='Search' />
+            {/* <div><i className="fa fa-solid fa-baskeball"></i></div> 
+            <input type="text" name="search-text" id="search-text" placeholder='Search' /> */}
+            <input type="search" autoComplete='off' name='search' id='search' 
+                className='input-search' 
+                placeholder={'search here'} 
+                onChange={handleChange}
+                
+                value={searchInput}/>
         </div>
 
         <div>
@@ -95,9 +128,11 @@ const InventoryListPage = () => {
 
       {/* display a list of inventory units */}
       <div>
-           {inventory.map((item, index) => (
-            <InventoryListItem key={item.id} item={item}/>
-           ))}
+          {searchInput? 
+          <InventoryListItem inventory={filteredData}/>:
+           <InventoryListItem inventory={inventory}/>
+        }
+           
        
       </div>
       

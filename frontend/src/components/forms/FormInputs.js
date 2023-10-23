@@ -43,8 +43,6 @@ let SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunc
     const [cursor, setCursor] = useState(-1)
     
 
-    let makeArray = searchElement;
-    
     const handleChange = (e)=>{
         
         e.preventDefault();
@@ -62,7 +60,7 @@ let SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunc
         
     }
 
-    const filteredData = makeArray.filter((element)=>{
+    const filteredData = searchElement.filter((element)=>{
         if (searchInput === ""){return element}
         else{
             return element.name.toLowerCase().includes(searchInput.toLowerCase())

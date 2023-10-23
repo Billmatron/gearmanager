@@ -28,9 +28,10 @@ function App() {
         <AuthProvider>
           <Header />
           <Routes>
+          <Route exact path = "/login"  element={<LoginPage />}/>
             <Route exact path = "/"  element={<PrivateRoute />}>
               <Route exact path = "/"  element={<HomePage />}/>
-              <Route exact path = "/login"  element={<LoginPage />}/>
+              
               <Route exact path="/units"  element={<UnitsListPage/>}/>
               <Route exact path="/units/:id" element={<UnitPage/>}/>
               <Route exact path="/inventory"  element={<InventoryListPage/>}/>
