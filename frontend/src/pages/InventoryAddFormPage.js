@@ -1,15 +1,23 @@
 import React, { useState, useEffect} from 'react'
-import { Link } from 'react-router-dom';
-import Body from '../components/Body'
+import {StyledFormContainer} from '../components/styles/Card.style'
 import InventoryAddForm from '../components/forms/InventoryAddForm'
 
 const InventoryAddFormPage = () => {
 
     
   return (
-    <Body>
-        <InventoryAddForm/>
-    </Body>
+    
+      <StyledFormContainer>
+
+
+            <InventoryAddForm/>
+
+
+      </StyledFormContainer>
+        
+  
+        
+   
     
   )
 }

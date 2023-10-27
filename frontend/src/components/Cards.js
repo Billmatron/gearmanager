@@ -1,5 +1,5 @@
-import React  from 'react'
-
+import React from 'react'
+import {StyledCard, StyledCardTitle, StyledCardError} from './styles/Card.style'
 let InstructionCard = (props) => {
     return (
         <div className="text-center col-5">
@@ -15,13 +15,21 @@ let InstructionCard = (props) => {
 
 let FormCard = ({children, error, cardTitle}) =>{
     return (
-        <div className="formCard-container invadd">
-            <h4 className='card-title'>{cardTitle}</h4>
-        <span className="error-message">{error}</span>
+        
+        <StyledCard $ga='main'>
+            <StyledCardTitle>{cardTitle}</StyledCardTitle>
+            <StyledCardError>{error}</StyledCardError>
+                
                 {children}
                 
-        </div>
+        </StyledCard>
         
+    )
+}
+
+export const CardTitle = () =>{
+    return (
+        <StyledCardTitle></StyledCardTitle>
     )
 }
 

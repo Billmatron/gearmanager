@@ -1,4 +1,5 @@
 import React, { useState} from 'react'
+import styled from 'styled-components'
 
 let InputContainer = ({label, children, classAdd}) =>{
     return (
@@ -35,6 +36,34 @@ let TextInput = ({label, placeholder, onChange, setValue}) => {
         placeholder={placeholder} />
     )
     
+}
+
+
+export const StyledSearchBox = styled.div`
+    border: 1px solid ${({theme})=>theme.colors.accent};
+    background-color: ${({theme})=>theme.colors.base};
+    display: flex;
+    align-items: center;
+
+    & input[type=search]{
+        border: none;
+        padding-left: 1rem;
+        outline:0;
+        background-color: ${({theme})=>theme.colors.base};
+    }
+`
+export const SearchBox = (props) =>{
+    return(
+        <StyledSearchBox id={props.id}>
+            <i className='material-icons'>{props.icon}</i>
+            <input type="search" autoComplete='off' name={props.name} id="" 
+                placeholder={props.placeholder}
+                onChange={props.onChange}
+                value={props.value}
+            />
+            
+        </StyledSearchBox>
+    )
 }
 
 let SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunction})=>{
@@ -147,10 +176,13 @@ let SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunc
         
     )
 }
-let SelectInput = ({onChange, defaultValue, disabledText, iterableElement, label, endselector, classAdd}) => {
+let SelectInput = ({onChange, defaultValue, disabledText, iterableElement, label, endselector, startselector, classAdd}) => {
+    
     return (
-        <select onChange={onChange} name={label}id={label} defaultValue={defaultValue}>
+        <select onChange={onChange} name={label}id={label} defaultValue={defaultValue} className={classAdd}>
                                 <option key='1' value="Choose" disabled={true}>{disabledText}</option>
+                                {iterableElement && startselector}
+                                
                                 {iterableElement?.map((element) => (
                                 <option key={element.id} value={element.id}>{element?.name}</option>
                                 ))} 
@@ -159,10 +191,10 @@ let SelectInput = ({onChange, defaultValue, disabledText, iterableElement, label
     )
 }
 
-let TextArea = ({label, placeholder, onChange}) => {
+let TextArea = ({label, placeholder, onChange, defaultValue}) => {
     return (
         <div>
-            <textarea name={label} id={label} rows="5"  placeholder={placeholder} onChange={onChange}></textarea>
+            <textarea name={label} id={label} rows="5"  defaultValue={defaultValue} placeholder={placeholder} onChange={onChange}></textarea>
         </div>
         
     )

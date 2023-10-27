@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import { useParams } from "react-router-dom";
-import Body from '../components/Body'
 
 
 const UnitPage = () => {
@@ -24,11 +23,11 @@ const UnitPage = () => {
     },[])
 
     return (
-        <Body>
+       
             <div>
                 <p>{unit?.make[0].name} {unit?.name} {unit?.weight_g}</p>
             </div>
-        </Body>
+        
    
   )
 }

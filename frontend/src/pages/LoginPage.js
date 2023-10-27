@@ -1,5 +1,4 @@
 import React, {useContext} from 'react'
-import Body from '../components/Body'
 import AuthContext from '../context/AuthContext'
 import { Link } from 'react-router-dom'
  //https://www.youtube.com/watch?v=xjMP0hspNLE
@@ -8,7 +7,7 @@ import { Link } from 'react-router-dom'
 const LoginPage = () => {
   let {loginUser} = useContext(AuthContext)
   return (
-    <Body>
+   
         <div>
           <div>
             <form className="form-container login" onSubmit={loginUser}> 
@@ -45,7 +44,7 @@ const LoginPage = () => {
           </div>
         
     </div>
-    </Body>
+   
     
   )
 }

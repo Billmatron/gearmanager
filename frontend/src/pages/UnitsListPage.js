@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import Body from '../components/Body'
 import {ListItem} from '../components/ListItem'
 
 
@@ -23,7 +22,7 @@ const UnitsListPage = () => {
 
 
   return (
-    <Body>
+
          <div>
        
        <div className="units-list">
@@ -35,7 +34,7 @@ const UnitsListPage = () => {
 
 
    </div>
-    </Body>
+    
    
   )
 }

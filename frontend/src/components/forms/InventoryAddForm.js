@@ -73,13 +73,17 @@ const InventoryAddForm = () => {
 
         // when a user selects a make, setUnits to fill in the datalist of units
         function handleMakesSelect(id, name){
-            const make_id = id;
+            const make_id = parseInt(id);
+            
+            
             //const make_id = e.target.value;
             
             makes.forEach((make)=>{
+                
                 if (make.id === make_id){
                     // set selected make on the global inventory form state
                     setError(null)
+                    console.log(make)
                     setSelectedMake(make)
                 }
             })
@@ -165,7 +169,7 @@ const InventoryAddForm = () => {
         
         return (
    
-                <FormCard error={error}>
+                <FormCard cardTitle={'Pick a maker'} error={error}>
                     <InputContainer label="Make">
                     {makes &&
                         <SearchField
@@ -628,62 +632,28 @@ const InventoryAddForm = () => {
 
 
     return (
-        
-        <main className='display-flex justify-evenly'>
+        <>
             
                 {step === 0 && 
-                <>
-                    <InstructionCard
-                    title="Lets Add a Toy!"
-                    step1="Search for a brand"
-                    step2="If you don't see the model, we can add a new one"/>
-                    <div className="col-7">
-                        <Step0 />
-                    </div>
                     
-                </>
-                    
+                    <Step0 />
+
                 }
 
                 {step === 1 &&
-                <>
-                    <InstructionCard
-                        title="Add a New Model"
-                        step1="We have to add this one to the database first"
-                        step2="Fill out as much as you can, it is very helpful later on"
-                    />
-                    <div className="col-7">
-                        <Step1 make={step0Make} newUnit={step0NewUnitName}/>
-                    </div>
                     
-                </>
-                
-                
+                    <Step1 make={step0Make} newUnit={step0NewUnitName}/>
+      
                 }
+
                 {step === 2 &&
-                <>
-                <InstructionCard
-                    title="Inventory Specifics"
-                    step1="Separate Serials by a comma"/>
-                <div className="col-7">
+
                     <Step2 make={step0Make} unit={step0Unit} />
-                </div>
-                
-                </>
-                    
+ 
                 }
-
-         
-        </main>
-        
-        
-            
-        
-           
+        </>
+       
     )
-        
-
-    
 
 }
 

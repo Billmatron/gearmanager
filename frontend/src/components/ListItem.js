@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import {unixConvert} from '../utils/helpers'
+import styled from 'styled-components'
 
 
 
@@ -15,21 +16,56 @@ const ListItem = ({item}) => {
 
 // export default ListItem
 
+export const StyledGridRow = styled.div`
+    display: grid;
+    /* padding: 0.2rem; */
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    border-left: 1px solid black;
+    grid-template-columns: repeat(12, 8%);
+    grid-template-areas: 
+        "qty name name name category category date label price serial serial rate";
+  
 
-const InventoryListItem = ({inventory}) => {
-  console.log(inventory)
+`
+
+export const StyledGridRowItem = styled.div`
+   
+    background-color: ${({$active}) => $active ? ({theme})=>theme.colors.accent : ({theme})=>theme.colors.base};
+    color: ${({$active}) => $active ? ({theme})=>theme.colors.base : ({theme})=>theme.colors.accent};
+    border: 1px solid black;
+    border-left: none;
+    text-align: ${({$number})=> $number? 'center': 'left' };
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    font-size: small;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem; 
+    padding-left:${({$number})=> $number? '0rem': '0.3rem' };
+    grid-area: ${props=>props.$gridArea};
+`
+
+
+
+
+const InventoryListItem = ({inventory, quote}) => {
+  
  const [clicked, setClicked] = useState(false)
  const [sorted, setSorted] = useState({columnName: '', sortDirection:true}) // true means ascending, false means descending
 
- const columns = [{name:'quantity', label:'qty'},
-                {name:'name', label:'Name'},
-                {name:'create_ux', label:'Date Added'},
-                {name:'label', label:'Label'},
-                {name:'purchase_price', label:'Purchase Price'},
-                {name:'serial_number', label:'Serial'},
-                {name:'rate', label:'Rate'}]
+ const columns = [{name:'quantity', label:'qty', column:'qty'},
+                {name:'name', label:'Name', column:'name'},
+                {name:'create_ux', label:'Date Added', column:'date'},
+                {name:'label', label:'Label', column:'label'},
+                {name:'purchase_price', label:'Purchase Price', column:'price'},
+                {name:'serial_number', label:'Serial', column:'serial'},
+                {name:'rate', label:'Rate', column:'rate'},
+                {name:'category', label:'Category', column:'category'}]
   
   function handleGridClick(e){
+    // set it to run ascending then decending based on click amount
       if(sorted.columnName === e.target.dataset.name){
         inventory = inventorySort(inventory, e.target.dataset.name)
       } else {
@@ -61,25 +97,54 @@ const InventoryListItem = ({inventory}) => {
   }
     return (
       <>
-      <div  className="inventory-grid-container">
-          {columns.map((item, index)=>(
-            <div key={index} onClick={handleGridClick} className={`inventory-grid-item ${item.name===sorted.columnName? 'selected':''}`} data-name={item.name}>{item.label}</div>
-          ))}
+     {/* make top navigation row for spreadsheet look */}
+      <StyledGridRow>
+        {columns.map((item, index)=>{
+          let active = false;
+          {item.name === sorted.columnName ? active=true:active=false}
+          
+          return (
+              <StyledGridRowItem
+                    key={index}
+                    $number={'true'}
+                    onClick={handleGridClick}
+                    data-name={item.name}
+                    $gridArea={item.column}
+                    $active={active}>
+                      {item.label}
+              </StyledGridRowItem>
+            
+            )})}
+      </StyledGridRow>
+          
           
             
-      </div>
+   
 
         {inventory?.map((item, index)=>(
-          <div key={item.id} className="inventory-grid-container">
-            <input className="inventory-grid-item" type="number" name="quantity" id={`quantity${item.id}`} defaultValue={item.quantity} />
-            <div className="inventory-grid-item slide-left"><Link to={`/inventory/${item.id}`}>{item.name}</Link></div>
-            <div className="inventory-grid-item">{unixConvert(item.create_ux)}</div>
-            <input className="inventory-grid-item" type="text" name="label" id="label" defaultValue={item.label} />
-            <div className="inventory-grid-item">{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</div>
+
+          <StyledGridRow key={item.id}>
+            <StyledGridRowItem $gridArea={'qty'} $number={'true'}>{item.quantity}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'name'}>{item.name}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'category'}>{item.category}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'label'}>{item.label}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'price'} $number={'true'}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'serial'}>{item.serial_number}</StyledGridRowItem>
+            <StyledGridRowItem $gridArea={'rate'} $number={'true'}>{`$${(item.rate/100).toLocaleString('en-US')}/day`}</StyledGridRowItem>
+          </StyledGridRow>
+          // <div key={item.id} className="inventory-grid-container">
             
-            <div className="inventory-grid-item serial-number">{item.serial_number}</div>
-            <div className="inventory-grid-item">{`$${(item.rate/100).toLocaleString('en-US')}/day`}</div>
-          </div>
+          //   <div className="inventory-grid-item inv-grid-date">{unixConvert(item.create_ux)}</div>
+          //   <input className="inventory-grid-item inv-grid-label" type="text" name="label" id="label" defaultValue={item.label} />
+          //   <div className="inventory-grid-item inv-grid-value">{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</div>
+          //   <input className="inventory-grid-item inv-grid-qty" type="number" name="quantity" id={`quantity${item.id}`} defaultValue={item.quantity} />
+          //   <div className="inventory-grid-item serial-number inv-grid-serial">{item.serial_number}</div>
+          //   <div className="inventory-grid-item inv-grid-rate">{`$${(item.rate/100).toLocaleString('en-US')}/day`}</div>
+          //   <div className="inventory-grid-item slide-left inv-grid-name"><Link to={`/inventory/${item.id}`} state={{ unit: item }}>{item.name}</Link></div>
+          //   <div className="inventory-grid-item slide-left inv-grid-category">{item.category}</div>
+            
+          // </div>
         ))}
       </>
     

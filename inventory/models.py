@@ -94,7 +94,7 @@ class Inventory(models.Model):
 	serial_number = ArrayField(models.CharField(max_length=30, blank=True))
 	label = models.CharField(max_length=200)
 	purchase_price = models.IntegerField(default=0)
-	notes = models.CharField(max_length=1000)
+	notes = models.CharField(max_length=1000, blank=True)
 	create_ux = models.BigIntegerField(null=False, default = int(time.time()))
 	exists = models.BooleanField(null=False, default=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="inventory", default=1)

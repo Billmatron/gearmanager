@@ -29,6 +29,7 @@ def getUnit(request, pk):
    
     return Response(serializer.data)
 
+#api call on inventory list page to get entire inventory for user
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getInventory(request):
@@ -37,9 +38,10 @@ def getInventory(request):
     serializer = InventorySerializer(inventory, many=True)
     return Response(serializer.data)
 
+#used on Inventory list page to do category filter select
 @api_view(['GET'])
-def getInventoryFilter(request, type_name):
-    inventory = Inventory.objects.filter(unit__types__name=type_name)
+def getInventoryFilter(request, type_id):
+    inventory = Inventory.objects.filter(unit__types__id=type_id)
     serializer = InventorySerializer(inventory, many=True)
     return Response(serializer.data)
 
@@ -119,3 +121,17 @@ def addToInventory(request):
     #unit = Unit.objects.get(pk=367)
     serializer = InventorySerializer(newInventoryItem, many=False)
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def editInventoryItem(request, pk):
+    data = request.data
+    item = Inventory.objects.get(id=pk)
+    serializer = InventorySerializer(instance=item, data=data)
+    
+    if serializer.is_valid():
+        serializer.save()
+    else:
+        print('not valid serializer')
+        print(serializer.errors)
+    return Response({'status':200})

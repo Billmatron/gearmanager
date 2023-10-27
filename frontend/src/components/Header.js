@@ -1,17 +1,33 @@
 import React from 'react'
 import { useContext } from "react";
 import { Link } from 'react-router-dom'
-
+import styled from 'styled-components'
 import AuthContext from '../context/AuthContext'
 
-const Header = () => {
+
+export const StyledMainHeader = styled.header`
+  background-color: ${({theme})=>theme.colors.accent};
+    color: ${({theme})=>theme.colors.base};
+    /* position: fixed;
+    top: 0;
+    left: 0; */
+ 
+    padding: 0.5rem;
+    margin: auto;
+    width: 100%;
+    /* height: 60px; */  
+    box-shadow: 5px 5px 10px gray;
+    z-index: 999;
+   ;
+`
+export const Header = (props) => {
  
   //const user = useContext(UserContext);
   const {user, logoutUser }= useContext(AuthContext);
   
   return (
-    <div>
-      <header>
+    
+      <StyledMainHeader id={props.id}>
   
           <div className="navflex">
             <div>
@@ -34,9 +50,17 @@ const Header = () => {
             </div>
           </div>
 
-      </header>
-    </div>
+      </StyledMainHeader>
+    
   )
 }
 
-export default Header
+
+export const StyledDataHeader = styled.header`
+  background-color: ${({theme})=>theme.colors.body};
+ 
+`
+export const DataHeader = () =>{
+  return(
+    <StyledDataHeader/>)
+}
