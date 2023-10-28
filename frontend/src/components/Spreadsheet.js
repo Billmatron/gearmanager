@@ -17,20 +17,24 @@ export const StyledSpreadsheetContainer = styled.div`
     
 `
 
-export const StyledSSRow = styled.div`
-    display: grid;
-    /* padding: 0.2rem; */
-    margin-top: 0.2rem;
-    margin-bottom: 0.2rem;
-    border-left: 1px solid black;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-areas: 
-        "qty name name name category category date label price serial serial rate";
-  
-
+export const StyledBody = styled.div`
+    
+    flex: auto;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+   
+    & ::-webkit-scrollbar {display:none;}
+    
 `
 
-export const StyledSSColumn = styled.div`
+export const HoverDiv = styled.div`
+    
+    
+    
+    
+`
+export const StyledHeaderColumn = styled.div`
     background-color: ${({$active}) => $active ? ({theme})=>theme.colors.accent : ({theme})=>theme.colors.base};
     color: ${({$active}) => $active ? ({theme})=>theme.colors.base : ({theme})=>theme.colors.accent};
     border: 1px solid black;
@@ -45,7 +49,68 @@ export const StyledSSColumn = styled.div`
     padding-bottom: 0.2rem; 
     padding-left:${({$number})=> $number? '0rem': '0.3rem' };
     grid-area: ${props=>props.$gridArea};
+
+
 `
+
+
+
+export const StyledHeaderRow = styled.div`
+    
+    display: grid;
+    /* padding: 0.2rem; */
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    border-left: 1px solid black;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-areas: 
+        "qty name name name category category date label price serial serial rate";
+    
+     
+     
+`
+
+
+export const StyledRow = styled.div`
+   
+    
+    display: grid;
+    /* padding: 0.2rem; */
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+    border-left: 1px solid black;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-areas: 
+        "qty name name name category category date label price serial serial rate";
+    
+    &:hover{
+        background-color: ${({$active}) => $active ? ({theme})=>theme.colors.accent : ({theme})=>theme.colors.base};
+        color: ${({$active}) => $active ? ({theme})=>theme.colors.base : ({theme})=>theme.colors.accent};
+    }
+   
+`
+export const StyledColumn = styled.div`
+    
+    
+    border: 1px solid black;
+    border-left: none;
+    text-align: ${({$number})=> $number? 'center': 'left' };
+    overflow-y: hidden;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    font-size: small;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem; 
+    padding-left:${({$number})=> $number? '0rem': '0.3rem' };
+    grid-area: ${props=>props.$gridArea};
+
+   
+
+`
+
+
+
 
 
 export const SpreadsheetHeader = ({onClick, active})=> {
@@ -63,12 +128,12 @@ export const SpreadsheetHeader = ({onClick, active})=> {
 
    
     return (
-        <StyledSSRow>
+        <StyledHeaderRow>
             {columns.map((item, index)=>{
                 let activeSetting = false;
                 {item.name === active.columnName ? activeSetting=true:activeSetting=false}
                 return(
-                    <StyledSSColumn
+                    <StyledHeaderColumn
                         key={index}
                         $number={'true'}
                         onClick={onClick}
@@ -76,46 +141,58 @@ export const SpreadsheetHeader = ({onClick, active})=> {
                         $gridArea={item.column}
                         $active={activeSetting}>
                         {item.label}
-                    </StyledSSColumn>
+                    </StyledHeaderColumn>
                 )
                 
             
             })}
-        </StyledSSRow>
+        </StyledHeaderRow>
     )
 }
 
-export const StyledSSBody = styled.div`
-    flex: auto;
-    overflow-y: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-   & ::-webkit-scrollbar {
-    display:none;
-}
-    
-    
 
-`
+export const Wrapper = (props)=>{
+    function wrapperClick(){
+        console.log('wrapper click')
+    }
 
-export const SpreadSheetBody = ({data})=>{
     return(
-        <StyledSSBody id={'ss-body'}>
-        {data?.map((item, index)=>(
+        <HoverDiv id={props.id} onClick={wrapperClick}>
+            {props.children}
+        </HoverDiv>
+    )
+}
+export const SpreadSheetBody = ({data})=>{
+   
+    function rowClick(item){
+        console.log(item)
+        const id = item.id
+   }
 
-            <StyledSSRow key={item.id}>
-              <StyledSSColumn $gridArea={'qty'} $number={'true'}>{item.quantity}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'name'}>{item.name}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'category'}>{item.category}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'label'}>{item.label}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'price'} $number={'true'}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'serial'}>{item.serial_number}</StyledSSColumn>
-              <StyledSSColumn $gridArea={'rate'} $number={'true'}>{`$${(item.rate/100).toLocaleString('en-US')}/day`}</StyledSSColumn>
-            </StyledSSRow>
+    return(
+        <StyledBody id={'ss-body'}>
+        {data?.map((item, index)=>(
+                <Wrapper key={item.id}>
+                    <StyledRow 
+                    id={item.id}
+                    
+                    onClick={(e)=>rowClick(item)}>
+                    <StyledColumn $gridArea={'qty'} $number={'true'}>{item.quantity}</StyledColumn>
+                    <StyledColumn $gridArea={'category'}>{item.category}</StyledColumn>
+                    <StyledColumn $gridArea={'name'}>{item.name}</StyledColumn>
+                    <StyledColumn $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</StyledColumn>
+                    <StyledColumn $gridArea={'label'}>{item.label}</StyledColumn>
+                    <StyledColumn $gridArea={'price'} $number={'true'}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</StyledColumn>
+                    <StyledColumn $gridArea={'serial'}>{item.serial_number}</StyledColumn>
+                    <StyledColumn $gridArea={'rate'} $number={'true'}>{`$${(item.rate/100).toLocaleString('en-US')}/day`}</StyledColumn>
+                </StyledRow>
+                </Wrapper>
+                
+           
+            
           
           ))}
-        </StyledSSBody>
+        </StyledBody>
     )
     
 }

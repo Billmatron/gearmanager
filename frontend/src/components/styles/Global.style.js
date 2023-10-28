@@ -15,5 +15,7 @@ body {
 a {
     text-decoration: none !important;
     cursor: pointer !important;
-}   
+}
+
+::-webkit-scrollbar {display:none;}
 `

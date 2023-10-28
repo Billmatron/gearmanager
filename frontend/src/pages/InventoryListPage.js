@@ -143,7 +143,7 @@ const InventoryListPage = () => {
                   label='category-select'
                   startselector={<option key='all' value="all">Full Inventory</option>}
                   />
-          </StyledToolBar>
+            </StyledToolBar>
      
           <SpreadsheetHeader id={'spreadsheet-header'}
             onClick={columnClick} 

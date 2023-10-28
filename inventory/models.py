@@ -31,7 +31,7 @@ class Unit(models.Model):
 	create_ux = models.BigIntegerField(null=False, default= int(time.time()))
 	make = models.ManyToManyField(Make, related_name='units')
 	image = models.CharField(max_length=100, default="")
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='models', default=1)
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='units', default=1)
 	#types
 	#subtypes
 	#attributes
@@ -102,5 +102,5 @@ class Inventory(models.Model):
 	
   
 	def __str__(self):
-		return f"{self.id}: {self.label}"
+		return f"{self.id}: {self.unit}"
 

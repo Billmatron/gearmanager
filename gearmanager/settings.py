@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'home',
     'inventory',
+    'invoice',
+    'client',
+    'quote',
     # 'inventory.apps.InventoryConfig',
     'django.contrib.admin',
     'django.contrib.auth',
