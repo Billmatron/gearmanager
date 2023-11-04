@@ -76,22 +76,15 @@ a {
     font-weight: bold;
 }
 
-.navbar-links{
-    padding-right: 1.5rem;
-    list-style-type: none;
-    overflow: hidden;
-    background-color: var(--accentColor);
-}
-.navbar-links li {
-    float: left;
-    
+.grid-test {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    justify-items: center;
+
 }
 
-.navbar-links li a{
-    color: var(--baseColor);
-    padding: 14px 16px;
-    text-decoration: none;
-}
+
 
 /* ******************************    FORMS/LOGIN PAGE ************************** */
 
@@ -253,11 +246,12 @@ a {
 }
 .searchField-results {
     width: 100%;
+    height:40px;
     border: 1px solid var(--callToAction);
     border-top: none;
-    position: absolute;
+    /* position: absolute; */
     background-color: var(--baseColor);
-    z-index: 4;
+    z-index: 999;
     
 }
 .searchField-results-item {
@@ -426,3 +420,22 @@ a {
 .border-none {border: none;}
 .border-1 {border: 1px solid black;}
 .border-2 {border: 2px solid black;}
+
+.testing-wrapper{
+    background-color: rgba(51, 51, 51, 0.5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    
+}
+.testing{
+   width:80%;
+   margin-top: 20px;
+    margin-left: 10px;
+   position: relative;
+
+}
+

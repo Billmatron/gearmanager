@@ -13,10 +13,14 @@ let InstructionCard = (props) => {
     
 }    
 
-let FormCard = ({children, error, cardTitle}) =>{
+let FormCard = ({children, error, cardTitle, closeCard}) =>{
     return (
         
-        <StyledCard $ga='main'>
+        <StyledCard>
+            <div className="display-flex">
+            <span className='border-1' onClick={closeCard}>X</span>
+            </div>
+            
             <StyledCardTitle>{cardTitle}</StyledCardTitle>
             <StyledCardError>{error}</StyledCardError>
                 

@@ -2,6 +2,10 @@ import React from 'react'
 // import {StyledButton} from './styles/Button.style'
 import { Link } from 'react-router-dom';
 import styled from 'styled-components'
+
+
+
+
 export const NextButton = ({onClick, title, classAdd}) =>{
     return(
         <div className="text-center mt1">
@@ -13,8 +17,44 @@ export const NextButton = ({onClick, title, classAdd}) =>{
 }
 
 
+export const StyledSaveButton = styled.button`
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: ${({theme})=>theme.colors.action};
+    color: ${({theme})=>theme.colors.base};
+    box-shadow: 2px 2px 5px gray;
+    border: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 0.5rem;
+    margin-bottom: 0.2rem;
 
-export const StyledButton = styled.button`
+    &:hover{
+        cursor: pointer;
+        transform: scale(1.2);
+    }
+`
+
+export const StyledDiscardButton = styled.button`
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: ${({theme})=>theme.colors.body};
+    
+    box-shadow: 2px 2px 5px gray;
+    border: ${({theme})=>theme.colors.accent};
+    position: absolute;
+    bottom: 0;
+    right: 1;
+    margin-right: 0.5rem;
+    margin-bottom: 0.2rem;
+
+    &:hover{
+        cursor: pointer;
+        transform: scale(1.2);
+    }
+`
+export const StyledToolBarButton = styled.button`
     height: 100%;
     padding-left: 1.2rem;
     padding-right: 1.2rem;
@@ -27,10 +67,10 @@ export const StyledButton = styled.button`
     /* box-shadow: 5px 5px 5px gray; */
 `
 
-export const ToolBarButton = ({link, label, id})=>{
+export const ToolBarButton = ({link, label, id, onClick})=>{
     return (
-        <div id={id}>
-                <Link to={link}><StyledButton>{label}</StyledButton></Link>
+        <div id={id} onClick={onClick}>
+                <Link to={link}><StyledToolBarButton>{label}</StyledToolBarButton></Link>
         </div>
         
     )

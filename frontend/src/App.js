@@ -14,7 +14,7 @@ import InventoryAddFormPage from "./pages/InventoryAddFormPage";
 import {ThemeProvider} from 'styled-components'
 import {GlobalStyles} from './components/styles/Global.style'
 import {StyledFlexColumn, StyledFlexRow,StyledMain} from './components/styles/Containers.style'
-import {StyledFooter} from './components/styles/Footer.style'
+import {Footer} from './components/Footer'
 import {StyledSidebar, Sidebar} from './components/Sidebar'
 
 
@@ -29,6 +29,7 @@ const theme = {
     accent: 'rgb(82, 119, 156)'
   }
 }
+
 
 function App() {
   return (
@@ -62,8 +63,10 @@ function App() {
               </StyledMain>
               
             </StyledFlexRow>
-
-            <StyledFooter>I'm in the body footer</StyledFooter>
+        
+          <Footer>I'm in the body footer</Footer>
+         
+            
 
           
 

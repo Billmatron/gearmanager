@@ -41,7 +41,7 @@ class Quote(models.Model):
 class Labor(models.Model):
     name=models.CharField(max_length=100, unique=True, null=False)
     create_ux=models.PositiveBigIntegerField(null=False, default=int(time.time()))
-    type=models.ForeignKey(Types, on_delete=models.CASCADE, blank=True)
+    type=models.ForeignKey(Types, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"{self.id}: {self.name}"

@@ -14,11 +14,16 @@ urlpatterns = [
     path('inventory/<str:pk>', views.getInventoryItem, name='inventory-item'),
     path('inventory/edit/<str:pk>', views.editInventoryItem, name='edit-inventory-item'),
     path('newinventory', views.addToInventory, name='inventory-add'),
+    path('newinventory2', views.addToInventory2, name='inventory-add'),
 
     path('types', views.getTypes, name='types'),
     path('types/<str:make_name>', views.getTypesByMake, name='types-by-make'),
     
     path('makes', views.getMakes, name='makes'),
+    path('makes/<str:type_id>', views.getMakesByType, name='makes-by-type'),
     path('units/make/<str:make_id>', views.getUnitsByMake),
-    path('newunit/create', views.createNewUnit, name='create-unit')
+    path('units/maketypesubtype/<str:make_id>/<str:type_id>/<str:subtype_id>', views.getUnitsByMakeTypeSubtype, name='units-by-filter'),
+    path('newunit/create', views.createNewUnit, name='create-unit'),
+
+    path('attributes/filter/<str:make_id>/<str:type_id>', views.attributeFilter, name='attribute-filter')
 ]

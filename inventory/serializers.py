@@ -3,10 +3,6 @@ from .models import Unit, Make, Inventory, Types, Subtypes, Attributes, Attribut
 
 
 
-class MakeSerializer(ModelSerializer):
-    class Meta:
-        model = Make
-        fields = '__all__'
 
     
 class SubtypesSerializer(ModelSerializer):
@@ -31,6 +27,12 @@ class AttributeclassSerializer(ModelSerializer):
         model=Attributeclass
         fields = ('id', 'name', 'attributes')
 
+class MakeSerializer(ModelSerializer):
+    attributes = AttributeSerializer(read_only=True, many=True)
+    class Meta:
+        model = Make
+        fields = '__all__'
+
 
 class TypesSerializer(ModelSerializer):
     subtypes = SubtypesSerializer(read_only=True, many=True)
@@ -51,6 +53,7 @@ class UnitSerializer(ModelSerializer):
 class InventorySerializer(ModelSerializer):
     unit = UnitSerializer(read_only=True, many=False)
     make = MakeSerializer(read_only=True, many=False)
+    attributes = AttributeSerializer(read_only=True, many=True)
     class Meta:
         model = Inventory
         fields = '__all__'

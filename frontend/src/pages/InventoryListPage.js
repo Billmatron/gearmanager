@@ -6,8 +6,8 @@ import {StyledSpreadsheetContainer} from '../components/Spreadsheet'
 import {ToolBarButton} from '../components/Buttons'
 import AuthContext from '../context/AuthContext';
 import {SelectInput,  SearchBox} from '../components/forms/FormInputs'
-
-import {cleanInventory, pullTypesFromInventory, capitalizeFirstLetter} from '../utils/helpers'
+import {InventoryAddForm, InvAddForm} from '../components/forms/InventoryAddForm'
+import {cleanInventory, pullTypesFromInventory, sortInventory} from '../utils/helpers'
 
 
 
@@ -20,12 +20,36 @@ const InventoryListPage = () => {
     const [searched, setSearched] = useState(false)
     const {authTokens, logoutUser} = useContext(AuthContext)
     const [filteredData, setFilteredData] = useState([])
-    const [quoteSwitch, setQuoteSwitch] = useState(false)
-    const [clicked, setClicked] = useState(false)
+    const [updated, setUpdated] = useState(false)
+    const [add, setAdd] = useState(false)
     const [sorted, setSorted] = useState({columnName: '', sortDirection:false}) // true means ascending, false means descending
    
-    useEffect(()=>{ getInventory()}, []);
-    
+   
+    const columns = [{id:'quantity', name:'qty', column:'qty'},
+                {id:'name', name:'Name', column:'name'},
+                {id:'create_ux', name:'Date Added', column:'date'},
+                {id:'weight_g', name:'Weight', column:'weight'},
+                {id:'purchase_price', name:'Purchase Price', column:'price'},
+                {id:'serial_number', name:'Serial', column:'serial'},
+                {id:'rate', name:'Rate', column:'rate'},
+                {id:'category', name:'Category', column:'category'}]
+
+
+
+    // get inventory anytime the spreadsheet has been updated
+   useEffect(()=>{ 
+       getInventory()
+       typeSort(selectedType)
+    }, [updated])
+
+    // use effect to fill up filteredData with 'all' selectedType
+    // also keeps selected type the same between data edits
+    useEffect(()=>{
+      if (inventory){
+        typeSort(selectedType)
+      }
+    }, [inventory])
+
 
     let getInventory = async () => {
         let response = await fetch("/api/gear/inventory", {
@@ -41,9 +65,10 @@ const InventoryListPage = () => {
           const cleanTypes = await pullTypesFromInventory(data);
           
           setTypes(cleanTypes)
-          setFilteredData(cleanData)
           setInventory(cleanData)
           
+          
+        
           
         } else if(response.statusText === 'Unauthorized'){
           logoutUser()
@@ -51,21 +76,7 @@ const InventoryListPage = () => {
         
     }
 
-    // function to create new inventory state by filtering on selected type
-    let typeSort = async (type_id) => {
-      console.log(type_id)
-      if (type_id === 'all'){
-        setFilteredData(inventory)
-      } else {
-        let response = await fetch(`/api/gear/inventory/${type_id}`)
-        let data = await response.json()
-        if (response.status === 200){
-          setFilteredData(cleanInventory(data));
-        }
-        
-      }
-      setSelectedType(type_id);
-    }
+ 
 
 
     const handleSearch = (e)=>{
@@ -77,28 +88,64 @@ const InventoryListPage = () => {
       if(e.target.value.length >=1){
 
           setSearched(true)
-          setFilteredData(inventory?.filter((element)=>{
+          setFilteredData(filteredData?.filter((element)=>{
             if (searchInput === ""){return element}
             else{
                 return element.name.toLowerCase().includes(searchInput.toLowerCase())
             }
         }))
 
+      }else{
+        setSearched(false)
+        typeSort(selectedType)
       }
-      else{setSearched(false)}
       
   }
 
-  function columnClick(e){
-      const columnName = e.target.dataset.name
-      // set it to run ascending then decending based on click amount
-      if(sorted.columnName === columnName){
-          setFilteredData(columnSort(filteredData, columnName))
-      } else {
-          setFilteredData(columnSort(filteredData, columnName))
+ // sort data using the select dropdown
+  function typeSort(type_id){
+    
+    let data = inventory
+   
+    let newData = []
+    if(type_id === 'all'){
+      setFilteredData(sortInventory(inventory))
+      setSelectedType(type_id)
+      return
+    }
+    data.forEach(item =>{
+      if(item.unit.types[0].id === parseInt(type_id)){
+        newData.push(item)
       }
-      setSorted({columnName: columnName, sortDirection: !sorted.sortDirection})
-     
+    })
+    setFilteredData(newData)
+    setSelectedType(type_id)
+  }
+
+  function columnClick(e){
+    setAdd(false)
+    const columnName = e.target.dataset.name
+    // set it to run ascending then decending based on click amount
+    if(sorted.columnName === columnName){
+        setFilteredData(columnSort(filteredData, columnName))
+    } else {
+        setFilteredData(columnSort(filteredData, columnName))
+    }
+    setSorted({columnName: columnName, sortDirection: !sorted.sortDirection})
+   
+}
+
+  function columnChange(e){
+    setAdd(false)
+    const columnName = e.target.value
+    
+
+    if(sorted.columnName === columnName){
+      setFilteredData(columnSort(filteredData, columnName))
+  } else {
+      setFilteredData(columnSort(filteredData, columnName))
+  }
+  setSorted({columnName: columnName, sortDirection: !sorted.sortDirection})
   }
 
   function columnSort(data, column_name){
@@ -119,14 +166,31 @@ const InventoryListPage = () => {
     });
     return data
   }
+  
+  function updateBody(){
+   
+    setUpdated(!updated)
+  }
+
+  
+  function addNew(){
     
+    setAdd(!add)
+  }
+  function closeForm(){
+    setAdd(false)
+    setUpdated(!updated)
+  }
   return (
+    <>
     
-      <StyledSpreadsheetContainer id={'spreadsheet-container'}>
+    <StyledSpreadsheetContainer id={'spreadsheet-container'}>
+        
         <StyledDataHeader id={'data-header'}>
             <StyledToolBar id={'tool-bar'}>
             
-                <ToolBarButton id={'tool-bar-btn'} label={'Add New'} link={'/inventory/add'} />
+                <ToolBarButton id={'tool-bar-btn'} label={add ? 'Cancel':'Add New'} onClick={addNew} //link={'/inventory/add'} 
+                />
                 <SearchBox
                   id={'search-box'}
                   name='inv-search'
@@ -137,11 +201,19 @@ const InventoryListPage = () => {
                 />
                 <SelectInput
                   onChange={e=>typeSort(e.target.value)}
-                  defaultValue={'Choose'}
+                  defaultValue={'all'}
                   disabledText={'Category Filter'}
                   iterableElement={types}
                   label='category-select'
                   startselector={<option key='all' value="all">Full Inventory</option>}
+                  />
+                  <SelectInput
+                  onChange={columnChange}
+                  defaultValue={'all'}
+                  disabledText={'Category Filter'}
+                  iterableElement={columns}
+                  label='filter'
+                  startselector={<option key='all' value="all">Sort By</option>}
                   />
             </StyledToolBar>
      
@@ -150,11 +222,16 @@ const InventoryListPage = () => {
             active={sorted}/>
 
         </StyledDataHeader>
+            {add &&
+              <InvAddForm closeForm={closeForm} selectedType={selectedType}/>
+            }
 
-            <SpreadSheetBody data={filteredData}/>
+            <SpreadSheetBody data={filteredData} onUpdate={updateBody}/>
         
           
      </StyledSpreadsheetContainer>
+    </>
+      
   
      
    

@@ -6,3 +6,8 @@ export const StyledFooter = styled.footer`
     min-height: 50px;
     max-height: 100px;
 `
+export const StyledShadow = styled.div`
+  width: 100vw;
+  box-shadow: 5px 5px 10px gray;
+`
+

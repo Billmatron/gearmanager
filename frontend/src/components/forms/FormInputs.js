@@ -1,7 +1,46 @@
 import React, { useState} from 'react'
 import styled from 'styled-components'
+import {capitalizeFirstLetter} from '../../utils/helpers'
 
-let InputContainer = ({label, children, classAdd}) =>{
+
+export const StyledInputContainer = styled.div`
+    width: ${({$width})=> $width? `${$width}`: '100%' };
+    margin: auto;
+    text-align: start;
+    margin-bottom: 1rem;
+
+    label {
+        color: ${({theme})=>theme.colors.accent};
+        font-variant: small-caps;
+        font-size: smaller;
+    }
+
+    select {
+        text-align: center;
+        width: 100%;
+        padding: 8px;
+        border: 1px solid ${({theme})=>theme.colors.accent};
+        height: ${({$childHeight})=> $childHeight? `${$childHeight}`: '30px' };
+    }
+
+    input[type=text]{
+        width: 100%;
+        height: ${({$childHeight})=> $childHeight? `${$childHeight}`: '30px' };
+    }
+
+    textarea {
+        width:100%;
+        height: ${({$textAreaHeight})=> $textAreaHeight? `${$textAreaHeight}`: '50px' };
+    }
+`
+
+
+export const StyledFormLabel = styled.label`
+    color: ${({theme})=>theme.colors.accent};
+    font-variant: small-caps;
+    font-size: smaller;
+`
+export const InputContainer = ({label, children, classAdd}) =>{
     return (
         <div className={`input-container ${classAdd}`}>
             <div>
@@ -14,7 +53,8 @@ let InputContainer = ({label, children, classAdd}) =>{
     )
 }
 
-let NumInput = ({label, defaultValue, onChange, front, back}) => {
+
+export const NumInput = ({label, defaultValue, onChange, front, back}) => {
 return(
     <div className='display-flex align-baseline'>
         {front && <div className='align-bottom'>$</div>}
@@ -27,7 +67,19 @@ return(
 )
 }
 
-let TextInput = ({label, placeholder, onChange, setValue}) => {
+export const StyledNumInput = styled(NumInput)`
+    text-align: center;
+    & div{
+        background-color: blue;
+        border: 2px solid red;
+    }
+    & input{
+        background-color: brown;
+    }
+    
+`
+
+export const TextInput = ({label, placeholder, onChange, setValue}) => {
     return (
         <input
         type="text" name={label} id={label} 
@@ -37,7 +89,10 @@ let TextInput = ({label, placeholder, onChange, setValue}) => {
     )
     
 }
-
+export const StyledTextInput = styled.input`
+    width: 100%;
+    
+`
 
 export const StyledSearchBox = styled.div`
     border: 1px solid ${({theme})=>theme.colors.accent};
@@ -66,7 +121,7 @@ export const SearchBox = (props) =>{
     )
 }
 
-let SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunction})=>{
+export const SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunction})=>{
     const [searchInput, setSearchInput] = useState("")
     const [searched, setSearched] = useState(false)
     const [cursor, setCursor] = useState(-1)
@@ -176,7 +231,7 @@ let SearchField = ({label, searchElement, placeholder, setGlobalItem, finishFunc
         
     )
 }
-let SelectInput = ({onChange, defaultValue, disabledText, iterableElement, label, endselector, startselector, classAdd}) => {
+export const SelectInput = ({onChange, defaultValue, disabledText, iterableElement, label, endselector, startselector, classAdd}) => {
     
     return (
         <select onChange={onChange} name={label}id={label} defaultValue={defaultValue} className={classAdd}>
@@ -184,14 +239,18 @@ let SelectInput = ({onChange, defaultValue, disabledText, iterableElement, label
                                 {iterableElement && startselector}
                                 
                                 {iterableElement?.map((element) => (
-                                <option key={element.id} value={element.id}>{element?.name}</option>
+                                <option key={element.id} value={element.id}>{capitalizeFirstLetter(element?.name)}</option>
                                 ))} 
                                 {iterableElement && endselector}
                             </select>
     )
 }
 
-let TextArea = ({label, placeholder, onChange, defaultValue}) => {
+
+export const StyledTextArea = styled.textarea`
+    width:100%
+`
+export const TextArea = ({label, placeholder, onChange, defaultValue}) => {
     return (
         <div>
             <textarea name={label} id={label} rows="5"  defaultValue={defaultValue} placeholder={placeholder} onChange={onChange}></textarea>
@@ -200,5 +259,3 @@ let TextArea = ({label, placeholder, onChange, defaultValue}) => {
     )
 }
 
-
-export{TextArea, SelectInput, SearchField, TextInput, NumInput, InputContainer}

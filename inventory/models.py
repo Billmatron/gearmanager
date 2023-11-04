@@ -38,14 +38,6 @@ class Unit(models.Model):
 	def __str__(self):
 		return f"{self.id}: {self.name}"
 	
-	def to_dict(self):
-		
-		data = {'name': self.name,
-		  'id': self.id,
-		  'weight': self.weight_g,
-		  'make':self.make,
-		  }
-		return data
 
 
 class Types(models.Model): 
@@ -79,6 +71,7 @@ class Attributeclass(models.Model):
 class Attributes(models.Model):
 	name = models.CharField(max_length=50, unique=True)
 	unit_list = models.ManyToManyField(Unit, related_name='attributes')
+	makes = models.ManyToManyField(Make, related_name='attributes')
 	attribute_class = models.ForeignKey(Attributeclass, on_delete=models.CASCADE, related_name='attributes')
 	#inventory_set
 
@@ -90,9 +83,10 @@ class Inventory(models.Model):
 	make = models.ForeignKey(Make, on_delete=models.CASCADE, related_name="inventories")
 	quantity = models.IntegerField(default=1, null=False)
 	rate = models.IntegerField(default=0)
-	attributes = models.ManyToManyField(Attributes)
-	serial_number = ArrayField(models.CharField(max_length=30, blank=True))
-	label = models.CharField(max_length=200)
+	attributes = models.ManyToManyField(Attributes, blank=True)
+	serial_number = ArrayField(base_field=models.CharField(max_length=30, blank=True, null=True), default=list)
+	label = models.CharField(max_length=200, blank=True)
+
 	purchase_price = models.IntegerField(default=0)
 	notes = models.CharField(max_length=1000, blank=True)
 	create_ux = models.BigIntegerField(null=False, default = int(time.time()))

@@ -1,17 +1,7 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import {Link, useNavigate} from 'react-router-dom'
-
-
-export const StyledSidebar = styled.ol`
-    flex: 0 0 10%;
-    background-color: ${({theme})=>theme.colors.accent};
-    box-shadow: 5px 0px 10px gray;
-    padding-top: 2rem;
-
- 
-    
-`
+import {useWindowSize} from '../hooks/WindowSize'
 
 
 export const StyledSidebarItem = styled.li`
@@ -43,6 +33,76 @@ export const StyledSidebarItem = styled.li`
 
     
 `
+export const StyledSidebar = styled.ol`
+    /* flex: 0 0 10%; */
+    background-color: ${({theme})=>theme.colors.accent};
+    box-shadow: 5px 0px 10px gray;
+    padding-top: 2rem;
+    width: 200px;
+    z-index: 888;
+
+
+     /* x-small - cell phones */
+     @media only screen and (max-width: 640px) {
+        width:100%;
+        height: auto;
+        position: relative;
+        display: flex;
+        justify-content: space-evenly;
+        padding-top: 0;
+        box-shadow: 5px 5px 10px gray;
+        
+        ${StyledSidebarItem}{
+           
+            float:left;
+            margin-top: 0px;
+            padding: 1rem;
+            border-bottom: none;
+            
+        }
+    }
+
+
+    /* small devices - large phones */
+    @media only screen and (min-width: 641px) and (max-width: 768px) {
+       width: 10%;
+
+       label {
+        display: none;
+       }
+
+    }
+
+    /* Medium - tablets */
+    @media only screen and (min-width: 769px) and (max-width: 1060px) {
+        width: 15%;
+        
+        ${StyledSidebarItem}{
+            display: block;
+            text-align: center;
+            justify-content: space-evenly;
+            
+
+            label {
+            font-size: normal;
+            font-weight: 400;
+        }
+        }
+       
+    }
+
+    /* Large - laptons */
+    @media only screen and (min-width: 1060px) {
+        
+       width: 200px
+    }
+
+  
+ 
+`
+
+
+
 
 
 
@@ -56,9 +116,12 @@ export const SideBarLabel = (props)=>{
                 <div>
                     <i className='material-icons'>{props.icon}</i>
                 </div>
-                <div>
+                {props.$screenWidth > 640 &&
+                    <div>
                     <label>{props.text}</label>
                 </div>
+                }
+                
             
         </StyledSidebarItem>
         </Link>
@@ -67,9 +130,17 @@ export const SideBarLabel = (props)=>{
 
 
 }
+function ShowWindowDimensions(props) {
+    const [width, height] = useWindowSize();
+    return <span>Window size: {width} x {height}</span>;
+  }
+
 export const Sidebar = (props)=>{
    const [active, setActive] = useState()
+   const [width, height] = useWindowSize();
    const navigate = useNavigate()
+
+   
     
    function sidebarClick(href, name){
         setActive(name)
@@ -84,6 +155,7 @@ export const Sidebar = (props)=>{
     
     
     return(
+        
         <StyledSidebar id={props.id}>
 
             {categories.map((item)=>{
@@ -91,6 +163,7 @@ export const Sidebar = (props)=>{
                 {item.name === active ? activeSetting=true: activeSetting=false}
                 return(
                 <SideBarLabel
+                    $screenWidth={width}
                     onClick={()=>sidebarClick(item.href, item.name)}
                     $active={activeSetting}
                     key={item.name}

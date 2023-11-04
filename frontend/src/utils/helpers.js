@@ -1,3 +1,9 @@
+function sortInventory(data){
+    data.sort((a,b)=>a.unit.types[0].name.localeCompare(b.unit.types[0].name) || a.name.localeCompare(b.name))
+    return data
+}
+
+
 function cleanInventory(inventory){
 
     inventory.map((item)=>{
@@ -5,14 +11,48 @@ function cleanInventory(inventory){
         const unit = item.unit.name
         const subtype = item.unit.subtypes[0].name
         const type = item.unit.types[0].name
+        
+        item = cleanAttributes(item)
         item['name'] = `${make} ${unit}`
         item['category'] = `${capitalizeFirstLetter(type)}, ${capitalizeFirstLetter(subtype)}`
         
        
     })
-    return inventory
+    return sortInventory(inventory)
 }
 
+function cleanAttributes(unit){
+    
+    let classNames = new Set();
+    let attributeArray = []
+    
+    
+    // setep 1, fill out a class name set with unique names
+    unit.attributes.map((item)=>{
+        classNames.add(item.attribute_class.name)
+    })
+
+    // step2: use the set to create a unique item in array
+    classNames.forEach((name)=>{
+        attributeArray.push({name: name, attributes:[]})
+    })
+
+    // step3: put the attributes in the array
+    unit.attributes.map((item)=>{
+        attributeArray.forEach((arrayItem)=>{
+        
+            if(arrayItem.name === item.attribute_class.name){
+              
+                arrayItem.id = item.attribute_class.id
+                arrayItem.attributes.push({id: item.id, name: item.name})
+            }
+        })
+    })
+    
+    unit.cleanAttributes = attributeArray;
+    
+    return unit
+}
 
 
 function pullTypesFromInventory(inventory){
@@ -27,6 +67,10 @@ function pullTypesFromInventory(inventory){
         let split = item.split(',')
         typesArray.push({name:capitalizeFirstLetter(split[0]), id:parseInt(split[1])})
     })
+
+
+    typesArray.sort((a,b)=> a.name.localeCompare(b.name))
+   
     return typesArray
 }
 
@@ -46,6 +90,6 @@ function capitalizeFirstLetter(str){
 
 
 
-export {cleanInventory, unixConvert, pullTypesFromInventory, capitalizeFirstLetter}
+export {cleanInventory, cleanAttributes, unixConvert, pullTypesFromInventory, capitalizeFirstLetter, sortInventory}
 
 

@@ -14,6 +14,7 @@ export const StyledCard = styled.div`
     box-shadow: 5px 10px 20px gray;
     border: 1px solid ${({theme})=>theme.colors.accent};
     grid-area: ${props=>props.$ga};
+    position: relative;
     
 `
 
