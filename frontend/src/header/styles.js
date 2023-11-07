@@ -5,7 +5,7 @@ import {v, btnReset} from '../styles/variables'
 
 export const SMainHeader = styled.header`
     background-color: ${({theme})=>theme.accent};
-    color: ${({theme})=>theme.base};
+    color: ${({theme})=>theme.text};
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     grid-template-areas: 
@@ -52,7 +52,7 @@ export const SMainHeader = styled.header`
 
 export const SShadow = styled.div`
   width: 100vw;
-  box-shadow: 5px 5px 10px gray;
+  box-shadow: 5px 5px 10px ${({theme})=>theme.boxShadow};
 `
 
 export const SHeaderTitle = styled.span`
@@ -83,7 +83,7 @@ export const SLinkContainer = styled.div`
     background: transparent;
     border-radius: ${v.borderRadius};
     margin-right: ${v.lgSpacing};
-    color: ${({$active}) => $active ? ({theme})=>theme.action : ({theme})=>theme.base};
+    color: ${({$active}) => $active ? ({theme})=>theme.action : ({theme})=>theme.text};
     grid-area: notification;
 
     & :hover {
@@ -150,7 +150,7 @@ export const SLinkNotification = styled.div`
     font-size: 15px;
     padding: calc(${v.smSpacing} /2) ${v.smSpacing};
     border-radius: calc(${v.borderRadius} *2);
-    background-color: ${({ theme })=> theme.base};
+    background-color: ${({ theme })=> theme.text};
     color: ${({ theme })=> theme.accent};
     
     margin-left: ${v.mdSpacing};
@@ -161,48 +161,3 @@ export const SLinkNotification = styled.div`
 
 
 
-
-
-// export const SMainHeader = styled.header`
-//     background-color: ${({theme})=>theme.accent};
-//     color: ${({theme})=>theme.base};
-    
-//     display: flex;
-//     justify-content: space-between;
-//     align-items: center;
-//     padding: 0.5rem;
-//     margin: auto;
-//     width: 100%;
-//     height: ${v.headerHeight} ;
-//     /* box-shadow: 5px 5px 10px gray; */
-//     z-index: 777;
-//     border: none !important;
-   
-
- 
-//     ul {
-//       display: flex;
-//       justify-content: end;
-//       padding-right: 1.5rem;
-//       list-style-type: none;
-//       overflow: hidden;
-//       background-color: ${({theme})=>theme.accent};
-//     }
-
-//     ul > li {
-//       float: left;
-//     }
-//     ul > li > a{
-//       color: ${({theme})=>theme.base};
-//       padding: 14px 16px;
-//       text-decoration: none;
-//     }
-
-
-//     /* x-small - cell phones */
-//     @media only screen and (max-width: 640px) {
-//         box-shadow: none;
-
-     
-//     }
-// `

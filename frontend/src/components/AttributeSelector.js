@@ -10,7 +10,7 @@ export const StyledAttributeCard = styled.div`
     width: ${({$width})=> $width? `${$width}`: 'auto' };
 
     h5 {
-        color:${({theme})=>theme.colors.accent};
+        color:${({theme})=>theme.accent};
     }
     p {
         font-size: xx-small;
@@ -35,7 +35,7 @@ export const StyledAttributeItem = styled.div`
     margin-left: 0.5rem;
 
     label {
-        color: ${({theme})=>theme.colors.accent};
+        color: ${({theme})=>theme.accent};
         font-variant: small-caps;
         font-size: smaller;
     }
@@ -46,7 +46,7 @@ export const StyledAttributeItem = styled.div`
         height: 150px;
         padding: 2px;
         border:none;
-        border-top: 1px solid ${({theme})=>theme.colors.accent};
+        border-top: 1px solid ${({theme})=>theme.accent};
         
         box-shadow: inset 0px 0px 10px gray;
 

@@ -5,15 +5,19 @@ export const lightTheme = {
         body: 'whitesmoke',
         accent: 'rgb(82, 119, 156)',
         boxShadow: 'gray',
+        text: 'black',
+        activeText: 'white',
       
 }
 export const darkTheme = {
 
-        action: 'rgb(142, 200, 122)',
-        base: 'gray',
-        body: 'black',
-        accent: 'rgb(75, 12, 114)',
-        boxShadow: 'gray',
+        action: '#4b1407',
+        base: '#050a0f',
+        body: '#26262c',
+        accent: '#060c23',
+        boxShadow: 'black',
+        text: 'white',
+        activeText: 'black',
 
 
 }

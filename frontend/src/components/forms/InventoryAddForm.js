@@ -6,9 +6,10 @@ import {FormCard, InstructionCard} from '../Cards'
 import {AttributeSelectors, 
     AttributeSelectorsSingle, StyledAttributeCard} from '../AttributeSelector'
 import AuthContext from '../../context/AuthContext'
-import {StyledExpandedRow, StyledColumn, StyledRow} from '../Spreadsheet'
+import {SExpandedRow, SColumn, SRow} from '../styles/Spreadsheet.style'
 import {StyledFlexDiv, StyledDiv, StyledLineBreak} from '../styles/Containers.style'
 import {cleanAttributes} from '../../utils/helpers'
+import DisplayContext from '../../context/DisplayContext'
 
 
 export const InventoryAddForm = ({closeForm}) => {
@@ -662,12 +663,14 @@ export const InvAddForm = (props)=>{
     const [subtypes, setSubtypes] = useState(null)
     const [selectedSubtype, setSelectedSubtype] = useState(null)
     const [attributes, setAttributes] = useState(null)
-    const [attributeClasses, setAttributeClasses] = useState(new Set())
-    const {authTokens} = useContext(AuthContext)
+    
 
+    const {authTokens} = useContext(AuthContext)
+    const {width, height} = useContext(DisplayContext)
+    const [tablet, setTablet] = useState(width<=1000 ? true: false)
     let navigate = useNavigate();
     // hold onto input from the Unit search bar
-    let inputRef = useRef()
+   
 
 
     const weight_units = [{name:'lbs', id:453},
@@ -724,7 +727,11 @@ export const InvAddForm = (props)=>{
     
     }, [selectedSubtype])
 
-
+    useEffect(()=>{
+        if (width>=1000){
+            setTablet(false)
+        } else {setTablet(true)}
+    }, [width])
 
     function handleTypeSelect(e){
         // reset things if selecting this a second time
@@ -904,16 +911,16 @@ export const InvAddForm = (props)=>{
     }
 
     return(
-        <StyledExpandedRow id={props.id} $height={'auto'}>
-            <StyledRow $active={false} id={'styled-row1'}>
-                <StyledColumn $gridArea={'qty'} $number={true}>
+        <SExpandedRow id={props.id} $height={'auto'}>
+            <SRow $active={false} id={'styled-row1'}>
+                <SColumn $gridArea={'qty'} $number={true}>
                     <input type="number" name="qty" id="qty" 
                         defaultValue={1} 
                         onChange={(e)=>setNewInv({...newInv, quantity:e.target.value})} />
-                </StyledColumn>
+                </SColumn>
 
-                <StyledColumn $gridArea={'category'} id={'category-column'} >
-                    <StyledFlexDiv id={'category-flex'} $flexWrap={'nowrap'}>
+                <SColumn $gridArea={'category'} id={'category-column'} >
+                    <StyledFlexDiv id={'category-flex'} $flexWrap={tablet? 'wrap': 'nowrap'}>
                             {types && 
                             <>
                             <SelectInput
@@ -936,15 +943,15 @@ export const InvAddForm = (props)=>{
                     </StyledFlexDiv>
                    
                 
-                </StyledColumn>    
+                </SColumn>    
 
-                <StyledColumn $gridArea={'name'}  $selectWidth={'50'}>
+                <SColumn $gridArea={'name'}  $selectWidth={'50'}>
                     {(makes && !reset) &&
                         
                         <SelectInput label={'make'}
                             iterableElement={makes}
                             defaultValue={selectedMake? selectedMake.id: 'Choose'}
-                            disabledText={'Choose a make'}
+                            disabledText={'Make'}
                             onChange={handleMakesSelect}
                             $width={'50'}
                             />
@@ -954,7 +961,7 @@ export const InvAddForm = (props)=>{
                         <SelectInput label={'unit'}
                             iterableElement={units}
                             defaultValue={selectedUnit? selectedUnit.id: 'Choose'}
-                            disabledText={'Choose a model'}
+                            disabledText={'Model'}
                             onChange={handleUnitSelect}
                             endselector={<option key='new' value={'new'}>New Unit</option>}
                             $width={'50'}
@@ -966,22 +973,22 @@ export const InvAddForm = (props)=>{
                             onChange={(e)=>setNewInv({...newInv, name:e.target.value})}
                         />
                     }
-                </StyledColumn>
+                </SColumn>
 
 
                 
 
-                <StyledColumn $gridArea={'date'} $number={'true'}>
+                <SColumn $gridArea={'date'} $number={'true'}>
                     <input type="date" name="date" id="date"
                         defaultValue={date.toLocaleDateString('en-CA')} 
                         onChange={handleDateChange}
                     />
-                </StyledColumn>
+                </SColumn>
 
 
 
                 {newItem && 
-                    <StyledColumn $gridArea={'weight'}>
+                    <SColumn $gridArea={'weight'}>
                     
                     <input type='number' label={'weight'}
                         onChange={(e)=>setNewInv({...newInv, weight:e.target.value})}
@@ -992,21 +999,21 @@ export const InvAddForm = (props)=>{
                         onChange={(e)=>setNewInv({...newInv, weight_unit:e.target.value})}
                         />
                    
-                </StyledColumn>
+                </SColumn>
                 }
 
 
                 {selectedUnit &&
-                    <StyledColumn $gridArea={'weight'} $number={true}>
+                    <SColumn $gridArea={'weight'} $number={true}>
                         {selectedUnit.weight_g}g
 
-                    </StyledColumn>
+                    </SColumn>
                 }
                 
                     
                 {(selectedUnit || newItem) &&       
                     <>
-                        <StyledColumn $gridArea={'price'} $number={'true'}>
+                        <SColumn $gridArea={'price'} $number={'true'}>
                     {/* {`$${(item.purchase_price/100).toLocaleString("en-US")}`} */}
                     
                         <input type="number" name="price" id="price"
@@ -1014,28 +1021,28 @@ export const InvAddForm = (props)=>{
                         onChange={(e)=>setNewInv({...newInv, value:e.target.value})}  />
                        
                     
-                </StyledColumn>
+                </SColumn>
 
-                <StyledColumn $gridArea={'serial'}>
+                <SColumn $gridArea={'serial'}>
                         <input type="text" name="serial" id="serial"
                         defaultValue={''} 
                         onChange={(e)=>setNewInv({...newInv, serial_number:e.target.value})} /> 
                         <p>add serials separated by a comma</p>
-                </StyledColumn>
+                </SColumn>
 
                 
-                <StyledColumn $gridArea={'rate'} $number={'true'}>
+                <SColumn $gridArea={'rate'} $number={'true'}>
                         <input type="number" name="rate" id="rate"
                         defaultValue={selectedUnit? (selectedUnit.value/20)/100:'0'}
                         onChange={(e)=>setNewInv({...newInv, rate:e.target.value})}  />
                         <p>per day</p>
-                </StyledColumn>
+                </SColumn>
                     </>
                 
                 }
 
 
-            </StyledRow>
+            </SRow>
            
             
             {(newItem || selectedUnit) &&
@@ -1099,6 +1106,6 @@ export const InvAddForm = (props)=>{
             <StyledDiv $textAlign={'center'}>{error}</StyledDiv>
          }
             <StyledSaveButton onClick={handleSave}>Save</StyledSaveButton>
-        </StyledExpandedRow>
+        </SExpandedRow>
     )
 }

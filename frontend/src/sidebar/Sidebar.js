@@ -12,6 +12,7 @@ import {logoSVG} from '../assets'
 import {MdOutlineInventory2, MdOutlineRequestQuote, 
         MdGroups, MdOutlineSettings, MdAccountBox,
         MdOutlineChevronLeft} from 'react-icons/md'
+import {GrObjectGroup} from 'react-icons/gr'
 
 import { ThemeContext } from '../App'
 
@@ -42,12 +43,13 @@ export const Sidebar = (props) => {
 
     
     let linksArray = [{label:'Inventory', icon:<MdOutlineInventory2/>, to:'/inventory'},
-                    {label:'Quotes', icon:<MdOutlineRequestQuote/>, to:'#'},
-                    {label: 'Clients', icon:<MdGroups/>, to:'#'},
-                    {label: 'Invoices', icon:<MdOutlineRequestQuote/>, to:'#'}]
+                    {label:'Kits', icon:<GrObjectGroup/>, to:'/kits'},
+                    {label:'Quotes', icon:<MdOutlineRequestQuote/>, to:'/quotes'},
+                    {label: 'Clients', icon:<MdGroups/>, to:'/clients'},
+                    {label: 'Invoices', icon:<MdOutlineRequestQuote/>, to:'/invoices'}]
 
-    let secondaryLinksArray = [{label:'Settings', icon:<MdOutlineSettings/>, to:'/'},
-                    {label:'Account', icon:<MdAccountBox/>, to:'#'},
+    let secondaryLinksArray = [{label:'Settings', icon:<MdOutlineSettings/>, to:'/settings'},
+                    {label:'Account', icon:<MdAccountBox/>, to:'/account'},
                          ]
     return (
         <SSidebar id={props.id} $isOpen={sidebarOpen}>

@@ -1,204 +1,12 @@
-import React, {useState, useContext} from 'react'
-import { Link } from 'react-router-dom'
+import React, {useState, useContext, useEffect} from 'react'
 import {unixConvert, capitalizeFirstLetter} from '../utils/helpers'
-import styled from 'styled-components'
-import {inventorySort} from '../utils/helpers'
 import {TextArea, InputContainer, SelectInput} from './forms/FormInputs'
 import {StyledSaveButton, StyledDiscardButton} from './Buttons'
-import {AttributeSelectors} from './AttributeSelector'
-import {StyledFlexDiv, StyledDiv} from '../components/styles/Containers.style'
+import {SBody, SColumn, SRow, SExpandedRow, 
+         SHeaderColumn, SHeaderRow, SWrapper} from '../components/styles/Spreadsheet.style'
 import AuthContext from '../context/AuthContext'
-import {useWindowSize} from '../hooks/WindowSize'
+import DisplayContext from '../context/DisplayContext'
 
-
-
-export const StyledBody = styled.div`
-    
-    flex: auto;
-    overflow-y: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-   
-    & ::-webkit-scrollbar {display:none;}
-    
-`
-
-
-export const StyledHeaderColumn = styled.div`
-    background-color: ${({$active}) => $active ? ({theme})=>theme.accent : ({theme})=>theme.base};
-    color: ${({$active}) => $active ? ({theme})=>theme.base : ({theme})=>theme.accent};
-    border: 1px solid black;
-    border-left: none;
-    text-align: ${({$number})=> $number? 'center': 'left' };
-    overflow-y: hidden;
-    overflow-x: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    font-size: small;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem; 
-    padding-left:${({$number})=> $number? '0rem': '0.3rem' };
-    grid-area: ${props=>props.$gridArea};
-
-
-`
-
-
-
-export const StyledHeaderRow = styled.div`
-    
-    display: grid;
-    /* padding: 0.2rem; */
-    margin-top: 0.2rem;
-    margin-bottom: 0.2rem;
-    border-left: 1px solid black;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-areas: 
-        "qty category category category category name name name name name name name date date weight weight price price serial serial serial serial rate rate";
-    
-     
-     
-`
-
-
-
-export const StyledColumn = styled.div`
-
-    border:1px solid black;
-    border-left:none;
-    text-align: ${({$number})=> $number? 'center': 'left' };
-    overflow-y: hidden;
-    overflow-x: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    font-size: small;
-    padding-top: 0.2rem;
-    padding-bottom: 0.2rem; 
-    padding-left:${({$number})=> $number? '0rem': '0.3rem' };
-    grid-area: ${props=>props.$gridArea};
-
-
-    input[type=number]{
-        width: 100%;
-        border: 1px solid black;
-        
-        text-align: center;
-        height: 30px;
-    }
-
-    input[type=text]{
-        width: 100%;
-        height: 30px;
-    }
-    select{
-        width:  ${({$selectWidth})=> $selectWidth? `${$selectWidth}%`: '100%' };
-        height: 30px;
-    }
-    
-    input[type=date]{
-        width: 100%;
-        height: 30px;
-    }
-
-
-    
-`
-
-
-
-
-export const StyledRow = styled.div`
-    display: grid;
-    /* padding: 0.2rem; */
-    margin-top: 0.2rem;
-    margin-bottom: 0.2rem;
-    border-left: 1px solid black;
-    grid-template-columns: repeat(24, 1fr);
-    grid-template-areas: 
-    "qty category category category category name name name name name name name date date weight weight price price serial serial serial serial rate rate";
-    
-    &:hover{
-        background-color: ${ ({theme})=>theme.base};
-        color: ${({theme})=>theme.accent};
-    }
-
-    
-   
-`
-
-export const StyledExpandedRow = styled.div`
-    
-    height: ${({$height}) => $height ? $height : '200px'};
-    border: 1px solid black;
-    background-color:${({theme})=>theme.base};
-    position: relative;
-    margin-bottom: 2rem;
-    
-    
-    & ${StyledRow}{
-        border-left: none;
-    }
-    & ${StyledColumn}{
-        border: ${({$active}) => $active ? '1px solid black' : 'none'};
-        /* border-left: none; */
-        
-    }
-    
-`
-
-
-
-export const StyledSpreadsheetContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 20px 50px; 
-    overflow: scroll;
-    height: 80vh;
-    position: relative;
-    
-    /* medium */
-    @media only screen and (min-width: 641px) and (max-width: 1060px) {
-        margin: 20px 20px; 
-
-        /* ${StyledHeaderRow}, ${StyledRow}{
-            grid-template-columns: repeat(18, 1fr);
-            grid-template-areas: 
-            "qty category category category category name name name name name name name date date price price rate rate";
-        } */
-    }
-
-    /* small */
-    @media only screen and (min-width: 451px) and (max-width: 640px) {
-        margin: 20px 10px; 
-
-        /* ${StyledHeaderRow}, ${StyledRow}{
-            grid-template-columns: repeat(16, 1fr);
-            grid-template-areas: 
-            "qty category category category category name name name name name name name  price price rate rate";
-        } */
-        span {
-            display: none;
-        }
-    }
-
-    /* x-small */
-    @media only screen and (max-width: 450px) {
-        margin: 20px 10px; 
-
-        ${StyledHeaderRow}, ${StyledRow}{
-            grid-template-columns: repeat(14, 1fr);
-            grid-template-areas: 
-            "qty category category category name name  name name name name  price price rate rate";
-        }
-
-        ${StyledHeaderColumn}, ${StyledColumn}{
-            font-size: x-small;
-        }
-        span {
-            display: none;
-        }
-    }
-`
 
 
 
@@ -207,7 +15,7 @@ export const StyledSpreadsheetContainer = styled.div`
 
 
 export const SpreadsheetHeader = ({onClick, active})=> {
-    const [width, height] = useWindowSize();
+   
     let columns;
     
   
@@ -216,7 +24,7 @@ export const SpreadsheetHeader = ({onClick, active})=> {
         columns = [{name:'quantity', label:'qty', column:'qty'},
                 {name:'name', label:'Name', column:'name'},
                 {name:'create_ux', label:'Date Added', column:'date'},
-                {name:'weight_g', label:'Weight', column:'weight'},
+                {name:'unit.weight_g', label:'Weight', column:'weight'},
                 {name:'purchase_price', label:'Purchase Price', column:'price'},
                 {name:'serial_number', label:'Serial', column:'serial'},
                 {name:'rate', label:'Rate', column:'rate'},
@@ -226,12 +34,13 @@ export const SpreadsheetHeader = ({onClick, active})=> {
     
         
     return (
-        <StyledHeaderRow>
+        <SHeaderRow>
             {columns.map((item, index)=>{
+                
                 let activeSetting = false;
                 {item.name === active.columnName ? activeSetting=true:activeSetting=false}
                 return(
-                    <StyledHeaderColumn
+                    <SHeaderColumn
                         key={index}
                         $number={'true'}
                         onClick={onClick}
@@ -239,23 +48,31 @@ export const SpreadsheetHeader = ({onClick, active})=> {
                         $gridArea={item.column}
                         $active={activeSetting}>
                         {item.label}
-                    </StyledHeaderColumn>
+                    </SHeaderColumn>
                 )
                 
             
             })}
-        </StyledHeaderRow>
+        </SHeaderRow>
     )
 }
 
 
 
 export const SpreadSheetBody = ({data, onUpdate})=>{
-   const [active, setActive] = useState(-1)
-    const [activeUnit, setActiveUnit] = useState(null)
-    const [width, height] = useWindowSize();
+    const {width, height} = useContext(DisplayContext)
     const {authTokens} = useContext(AuthContext)
+    const [active, setActive] = useState(-1)
+    const [activeUnit, setActiveUnit] = useState(null)
+    const [tablet, setTablet] = useState(width<=1000 ? true: false)
+    
+    useEffect(()=>{
+        if (width<=1000){
+            setTablet(true)
+        } else{setTablet(false)}
+    },[width])
    
+
     function rowClick(item){
         
         if (active === item.id){
@@ -296,7 +113,7 @@ export const SpreadSheetBody = ({data, onUpdate})=>{
  
 
     return(
-        <StyledBody id={'ss-body'}>
+        <SBody id={'ss-body'}>
         {data?.map((item, index)=>{
             
             let activeStatus=false;
@@ -306,17 +123,17 @@ export const SpreadSheetBody = ({data, onUpdate})=>{
             if(activeStatus){
                 
                 return(
-                    <StyledExpandedRow
+                    <SExpandedRow
                         key={item.id}
                         id={item.id}
                         >
                         
-                        <StyledRow 
+                        <SRow 
                             key={item.id}
                             id={item.id}
                             $active={false}
                             >
-                            <StyledColumn $gridArea={'qty'} $number={'true'}>
+                            <SColumn $gridArea={'qty'} $number={'true'}>
                                 
                                 <input type="number" name="num" id="num" 
                                 defaultValue={activeUnit.quantity} 
@@ -324,29 +141,33 @@ export const SpreadSheetBody = ({data, onUpdate})=>{
                                 />
                                 
                                 
-                            </StyledColumn>
-                            <StyledColumn $gridArea={'category'}onClick={(e)=>rowClick(e)}>{item.category}</StyledColumn>
-                            <StyledColumn $gridArea={'name'}onClick={(e)=>rowClick(e)}>{item.name}</StyledColumn>
-                            <StyledColumn $gridArea={'date'} $number={'true'}onClick={(e)=>rowClick(e)}>{unixConvert(item.create_ux)}</StyledColumn>
-                            <StyledColumn $gridArea={'weight'} $number={'true'}onClick={(e)=>rowClick(e)}>{item.weight_g}</StyledColumn>
-                            <StyledColumn $gridArea={'price'} $number={'true'}onClick={(e)=>rowClick(e)}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</StyledColumn>
-                            <StyledColumn $gridArea={'serial'}>
+                            </SColumn>
+                            <SColumn $gridArea={'category'}onClick={(e)=>rowClick(e)}>{item.category}</SColumn>
+                            <SColumn $gridArea={'name'}onClick={(e)=>rowClick(e)}>
+                                
+                                {item.name}
+                            
+                            </SColumn>
+                            <SColumn $gridArea={'date'} $number={'true'}onClick={(e)=>rowClick(e)}>{unixConvert(item.create_ux)}</SColumn>
+                            <SColumn $gridArea={'weight'} $number={'true'}onClick={(e)=>rowClick(e)}>{item.weight_g}</SColumn>
+                            <SColumn $gridArea={'price'} $number={'true'}onClick={(e)=>rowClick(e)}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</SColumn>
+                            <SColumn $gridArea={'serial'}>
                                 <input type="text" name="serial" id="serial"
                                 defaultValue={serials} 
                                 onChange={(e)=>setActiveUnit({...activeUnit, serial_number:e.target.value.split(',')})} /> 
-                            </StyledColumn>
-                            <StyledColumn $gridArea={'rate'} $number={'true'}>
+                            </SColumn>
+                            <SColumn $gridArea={'rate'} $number={'true'}>
                                 <input type="number" name="rate" id="rate"
                                 defaultValue={(item.rate/100).toLocaleString('en-US')}
                                 onChange={(e)=>setActiveUnit({...activeUnit, rate:e.target.value * 100})}  />
                 
-                            </StyledColumn>
+                            </SColumn>
 
 
 
 
 
-                        </StyledRow>
+                        </SRow>
                         <InputContainer label={'Notes'}>
                             <TextArea
                                 label={'Notes'}
@@ -356,53 +177,58 @@ export const SpreadSheetBody = ({data, onUpdate})=>{
                         </InputContainer>
                     <StyledDiscardButton onClick={discardChanges}>Discard Changes</StyledDiscardButton>
                     <StyledSaveButton onClick={saveRow}>Save</StyledSaveButton>
-                    </StyledExpandedRow>
+                    </SExpandedRow>
                 )
             } else
 
             return(
             
             
-            <StyledRow 
+            <SRow 
                 key={item.id}
                 id={item.id}
                 $active={activeStatus}
                 onClick={(e)=>rowClick(item)}>
 
-                <StyledColumn $gridArea={'qty'} $number={'true'}>{item.quantity}</StyledColumn>
-                <StyledColumn $gridArea={'category'}>
+                <SColumn $gridArea={'qty'} $number={'true'}>{item.quantity}</SColumn>
+                <SColumn $gridArea={'category'}>
                     <>{capitalizeFirstLetter(item.unit.types[0].name)}
                         <span>{`, ${capitalizeFirstLetter(item.unit.subtypes[0].name)}`}</span>
                     </>
-                </StyledColumn>
-                <StyledColumn $gridArea={'name'}>{item.name}</StyledColumn>
+                </SColumn>
+                <SColumn $gridArea={'name'}>
+                    
+                        {item.name}
+   
+                
+                </SColumn>
                
                 
-                <StyledColumn $gridArea={'price'} $number={'true'}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</StyledColumn>
+                <SColumn $gridArea={'price'} $number={'true'}>{`$${(item.purchase_price/100).toLocaleString("en-US")}`}</SColumn>
                
-                <StyledColumn $gridArea={'rate'} $number={'true'}>
+                <SColumn $gridArea={'rate'} $number={'true'}>
                     <>
                     {`$${(item.rate/100).toLocaleString('en-US')}`}
                     <span>/day</span>
                     </>
-                </StyledColumn>
+                </SColumn>
                 
                
-                <StyledColumn $gridArea={'weight'} $number={true}>{item.unit.weight_g}g</StyledColumn>
-                <StyledColumn $gridArea={'serial'}>{serials}</StyledColumn>
-                <StyledColumn $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</StyledColumn>
+                <SColumn $gridArea={'weight'} $number={true}>{item.unit.weight_g}g</SColumn>
+                <SColumn $gridArea={'serial'}>{serials}</SColumn>
+                <SColumn $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</SColumn>
                 
                 
                 
            
-            </StyledRow>
+            </SRow>
                
                 
            
             
           
           )})}
-        </StyledBody>
+        </SBody>
     )
     
 }

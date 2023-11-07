@@ -181,9 +181,10 @@ def addToInventory2(request):
                              purchase_price=int(item['value']), rate=int(item['rate']), notes=item['notes'],
                              user=user, label='', serial_number=item['serial_number'])
     newInventory.save()
-    for attribute_id in item['attributes']:
-        db_attribute = Attributes.objects.get(pk=attribute_id)
-        newInventory.attributes.add(db_attribute)
+    if item['attributes']:
+        for attribute_id in item['attributes']:
+            db_attribute = Attributes.objects.get(pk=attribute_id)
+            newInventory.attributes.add(db_attribute)
 
     return Response({'status':200})
 

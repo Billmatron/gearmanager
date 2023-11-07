@@ -16,7 +16,7 @@ export const SSidebar = styled.div`
     background-color: ${({theme}) => theme.accent};
     height: 100vh;
     padding: ${v.lgSpacing};
-    color: ${({theme})=> theme.base};
+    color: ${({theme})=> theme.text};
     box-shadow: 5px 5px 10px ${({theme})=>theme.boxShadow};
     position: relative;
     z-index: 888;
@@ -68,7 +68,7 @@ export const SLinkContainer = styled.div`
     background: transparent;
     border-radius: ${v.borderRadius};
     margin: 8px 0;
-    color: ${({$active}) => $active ? ({theme})=>theme.action : ({theme})=>theme.base};
+    color: ${({$active}) => $active ? ({theme})=>theme.action : ({theme})=>theme.text};
 
     & :hover {
         a{
@@ -114,7 +114,7 @@ export const SLinkNotification = styled.div`
     padding: calc(${v.smSpacing} /2) ${v.smSpacing};
     border-radius: calc(${v.borderRadius / 2});
     background-color: ${({ theme })=> theme.accent};
-    color: white;
+    color: ${({ theme })=> theme.text};
     
     margin-right: ${v.mdSpacing};
 `
@@ -154,6 +154,6 @@ export const SToggleThumb = styled.div`
     right: cald(100% - 18px - 1px);
     border-radius: 50%;
     background-color: green;
-    ;
+    
 `
 

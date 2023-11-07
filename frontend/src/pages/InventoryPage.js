@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react'
 import {SpreadsheetHeader, SpreadSheetBody} from '../components/Spreadsheet'
 import { StyledToolBar} from '../components/styles/ToolBar.style'
 import {StyledDataHeader} from '../header/Header'
-import {StyledSpreadsheetContainer} from '../components/Spreadsheet'
+import {SSpreadsheetContainer} from '../components/styles/Spreadsheet.style'
 import {ToolBarButton} from '../components/Buttons'
 import AuthContext from '../context/AuthContext';
 import {SelectInput,  SearchBox} from '../components/forms/FormInputs'
@@ -123,8 +123,10 @@ const InventoryListPage = () => {
   }
 
   function columnClick(e){
+
     setAdd(false)
     const columnName = e.target.dataset.name
+    
     // set it to run ascending then decending based on click amount
     if(sorted.columnName === columnName){
         setFilteredData(columnSort(filteredData, columnName))
@@ -149,6 +151,7 @@ const InventoryListPage = () => {
   }
 
   function columnSort(data, column_name){
+    
     if (sorted.sortDirection){
       data.sort(function (a,b) {
         if (b[`${column_name}`] < a[`${column_name}`]){return -1}
@@ -184,7 +187,7 @@ const InventoryListPage = () => {
   return (
     <>
     
-    <StyledSpreadsheetContainer id={'spreadsheet-container'}>
+    <SSpreadsheetContainer id={'spreadsheet-container'}>
         
         <StyledDataHeader id={'data-header'}>
             <StyledToolBar id={'tool-bar'}>
@@ -229,7 +232,7 @@ const InventoryListPage = () => {
             <SpreadSheetBody data={filteredData} onUpdate={updateBody}/>
         
           
-     </StyledSpreadsheetContainer>
+     </SSpreadsheetContainer>
     </>
       
   

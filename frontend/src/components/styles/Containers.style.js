@@ -77,7 +77,7 @@ export const StyledDiv = styled.div`
 
 export const StyledLineBreak = styled.div`
     width:  ${({$width})=> $width? `${$width}`: '10px' };
-    background-color: ${({theme})=>theme.colors.accent};
+    background-color: ${({theme})=>theme.accent};
     height: ${({$height})=> $height? `${$height}`: '1px' };
     text-align: center;
     margin: auto;

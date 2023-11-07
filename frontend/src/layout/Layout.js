@@ -4,7 +4,7 @@ import DisplayContext from '../context/DisplayContext'
 import {SLayoutFixedHeader, SLayoutSidebarBody, SMain} from './styles'
 import {Header} from '../header/Header'
 import {Sidebar} from '../sidebar/Sidebar'
-import {Footer} from '../components/Footer'
+import {Footer} from '../footer/Footer'
 
 
 const Layout = ({children}) => {

@@ -17,7 +17,7 @@ export const SMain = styled.div`
 export const SLayoutSidebarBody = styled.div`
     display: flex;
     flex-direction: row;
-    overflow: auto;
+    overflow: hidden;
     flex:1;
 
   @media only screen and (max-width: 640px){
