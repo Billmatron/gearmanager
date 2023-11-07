@@ -9,7 +9,7 @@ export const StyledButton = styled.button`
     padding-bottom: 0.2rem;
     border-radius: 5px;
     border: none;
-    background-color: ${({theme})=>theme.colors.accent};
-    color: ${({theme})=>theme.colors.base};
+    background-color: ${({theme})=>theme.accent};
+    color: ${({theme})=>theme.base};
     /* box-shadow: 5px 5px 5px gray; */
 `

@@ -25,8 +25,8 @@ export const StyledBody = styled.div`
 
 
 export const StyledHeaderColumn = styled.div`
-    background-color: ${({$active}) => $active ? ({theme})=>theme.colors.accent : ({theme})=>theme.colors.base};
-    color: ${({$active}) => $active ? ({theme})=>theme.colors.base : ({theme})=>theme.colors.accent};
+    background-color: ${({$active}) => $active ? ({theme})=>theme.accent : ({theme})=>theme.base};
+    color: ${({$active}) => $active ? ({theme})=>theme.base : ({theme})=>theme.accent};
     border: 1px solid black;
     border-left: none;
     text-align: ${({$number})=> $number? 'center': 'left' };
@@ -118,8 +118,8 @@ export const StyledRow = styled.div`
     "qty category category category category name name name name name name name date date weight weight price price serial serial serial serial rate rate";
     
     &:hover{
-        background-color: ${ ({theme})=>theme.colors.base};
-        color: ${({theme})=>theme.colors.accent};
+        background-color: ${ ({theme})=>theme.base};
+        color: ${({theme})=>theme.accent};
     }
 
     
@@ -130,7 +130,7 @@ export const StyledExpandedRow = styled.div`
     
     height: ${({$height}) => $height ? $height : '200px'};
     border: 1px solid black;
-    background-color:${({theme})=>theme.colors.base};
+    background-color:${({theme})=>theme.base};
     position: relative;
     margin-bottom: 2rem;
     
@@ -160,22 +160,22 @@ export const StyledSpreadsheetContainer = styled.div`
     @media only screen and (min-width: 641px) and (max-width: 1060px) {
         margin: 20px 20px; 
 
-        ${StyledHeaderRow}, ${StyledRow}{
+        /* ${StyledHeaderRow}, ${StyledRow}{
             grid-template-columns: repeat(18, 1fr);
             grid-template-areas: 
             "qty category category category category name name name name name name name date date price price rate rate";
-        }
+        } */
     }
 
     /* small */
     @media only screen and (min-width: 451px) and (max-width: 640px) {
         margin: 20px 10px; 
 
-        ${StyledHeaderRow}, ${StyledRow}{
+        /* ${StyledHeaderRow}, ${StyledRow}{
             grid-template-columns: repeat(16, 1fr);
             grid-template-areas: 
             "qty category category category category name name name name name name name  price price rate rate";
-        }
+        } */
         span {
             display: none;
         }
@@ -211,7 +211,7 @@ export const SpreadsheetHeader = ({onClick, active})=> {
     let columns;
     
   
-    if(width > 1060){
+   
 
         columns = [{name:'quantity', label:'qty', column:'qty'},
                 {name:'name', label:'Name', column:'name'},
@@ -221,26 +221,10 @@ export const SpreadsheetHeader = ({onClick, active})=> {
                 {name:'serial_number', label:'Serial', column:'serial'},
                 {name:'rate', label:'Rate', column:'rate'},
                 {name:'category', label:'Category', column:'category'}]
-    } else if (width < 641){
-        columns = [{name:'quantity', label:'qty', column:'qty'},
-                {name:'name', label:'Name', column:'name'},
-                {name:'purchase_price', label:'Purchase Price', column:'price'},
-               
-                {name:'rate', label:'Rate', column:'rate'},
-                {name:'category', label:'Category', column:'category'}]
-    }
     
-    else {
-        columns = [{name:'quantity', label:'qty', column:'qty'},
-                {name:'name', label:'Name', column:'name'},
-                {name:'create_ux', label:'Date Added', column:'date'},
-                
-                {name:'purchase_price', label:'Purchase Price', column:'price'},
-               
-                {name:'rate', label:'Rate', column:'rate'},
-                {name:'category', label:'Category', column:'category'}]
-    }
-   
+        
+    
+        
     return (
         <StyledHeaderRow>
             {columns.map((item, index)=>{
@@ -403,16 +387,11 @@ export const SpreadSheetBody = ({data, onUpdate})=>{
                     </>
                 </StyledColumn>
                 
-                {width > 1060 &&
-                <>
-                        <StyledColumn $gridArea={'weight'} $number={true}>{item.unit.weight_g}g</StyledColumn>
-                        <StyledColumn $gridArea={'serial'}>{serials}</StyledColumn>
-                </>
-                    
-                }
-                {width > 641 &&
-                         <StyledColumn $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</StyledColumn>
-                }
+               
+                <StyledColumn $gridArea={'weight'} $number={true}>{item.unit.weight_g}g</StyledColumn>
+                <StyledColumn $gridArea={'serial'}>{serials}</StyledColumn>
+                <StyledColumn $gridArea={'date'} $number={'true'}>{unixConvert(item.create_ux)}</StyledColumn>
+                
                 
                 
            

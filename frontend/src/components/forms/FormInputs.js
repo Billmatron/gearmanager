@@ -10,7 +10,7 @@ export const StyledInputContainer = styled.div`
     margin-bottom: 1rem;
 
     label {
-        color: ${({theme})=>theme.colors.accent};
+        color: ${({theme})=>theme.accent};
         font-variant: small-caps;
         font-size: smaller;
     }
@@ -19,7 +19,7 @@ export const StyledInputContainer = styled.div`
         text-align: center;
         width: 100%;
         padding: 8px;
-        border: 1px solid ${({theme})=>theme.colors.accent};
+        border: 1px solid ${({theme})=>theme.accent};
         height: ${({$childHeight})=> $childHeight? `${$childHeight}`: '30px' };
     }
 
@@ -36,7 +36,7 @@ export const StyledInputContainer = styled.div`
 
 
 export const StyledFormLabel = styled.label`
-    color: ${({theme})=>theme.colors.accent};
+    color: ${({theme})=>theme.accent};
     font-variant: small-caps;
     font-size: smaller;
 `
@@ -95,8 +95,8 @@ export const StyledTextInput = styled.input`
 `
 
 export const StyledSearchBox = styled.div`
-    border: 1px solid ${({theme})=>theme.colors.accent};
-    background-color: ${({theme})=>theme.colors.base};
+    border: 1px solid ${({theme})=>theme.accent};
+    background-color: ${({theme})=>theme.base};
     display: flex;
     align-items: center;
 
@@ -104,7 +104,7 @@ export const StyledSearchBox = styled.div`
         border: none;
         padding-left: 1rem;
         outline:0;
-        background-color: ${({theme})=>theme.colors.base};
+        background-color: ${({theme})=>theme.base};
     }
 `
 export const SearchBox = (props) =>{

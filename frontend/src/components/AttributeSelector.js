@@ -14,7 +14,8 @@ export const StyledAttributeCard = styled.div`
     }
     p {
         font-size: xx-small;
-    color: #626262;
+        color: #626262;
+        margin-bottom: 1rem;
     }
 `
 
@@ -40,11 +41,14 @@ export const StyledAttributeItem = styled.div`
     }
     select {
         text-align: center;
-        width: 100%;
-      
-        height: 100px;
+        width: 75%;
+        
+        height: 150px;
         padding: 2px;
-        border: 1px solid ${({theme})=>theme.colors.accent};
+        border:none;
+        border-top: 1px solid ${({theme})=>theme.colors.accent};
+        
+        box-shadow: inset 0px 0px 10px gray;
 
         option:disabled:not(:first-child){
             margin-top: 1rem;
@@ -92,17 +96,8 @@ export const AttributeSelectors = ({onChange, attributes}) => {
 }
 
 
-
-
-
-
-
-
 export const AttributeSelectorsSingle = ({onChange, attributes}) => {
    
-    
-         
-
     return (
         <StyledAttributeCard id={'attribute-card'}>
             <h5>Select Attributes</h5>

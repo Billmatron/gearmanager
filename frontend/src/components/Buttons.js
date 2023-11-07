@@ -20,8 +20,8 @@ export const NextButton = ({onClick, title, classAdd}) =>{
 export const StyledSaveButton = styled.button`
     padding-left: 1rem;
     padding-right: 1rem;
-    background-color: ${({theme})=>theme.colors.action};
-    color: ${({theme})=>theme.colors.base};
+    background-color: ${({theme})=>theme.action};
+    color: ${({theme})=>theme.base};
     box-shadow: 2px 2px 5px gray;
     border: none;
     position: absolute;
@@ -39,10 +39,10 @@ export const StyledSaveButton = styled.button`
 export const StyledDiscardButton = styled.button`
     padding-left: 1rem;
     padding-right: 1rem;
-    background-color: ${({theme})=>theme.colors.body};
+    background-color: ${({theme})=>theme.body};
     
     box-shadow: 2px 2px 5px gray;
-    border: ${({theme})=>theme.colors.accent};
+    border: ${({theme})=>theme.accent};
     position: absolute;
     bottom: 0;
     right: 1;
@@ -62,8 +62,8 @@ export const StyledToolBarButton = styled.button`
     padding-bottom: 0.2rem;
     border-radius: 5px;
     border: none;
-    background-color: ${({theme})=>theme.colors.accent};
-    color: ${({theme})=>theme.colors.base};
+    background-color: ${({theme})=>theme.accent};
+    color: ${({theme})=>theme.base};
     /* box-shadow: 5px 5px 5px gray; */
 `
 

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const StyledBody = styled.div`
-    background-color: ${({theme})=>theme.colors.body};
+    background-color: ${({theme})=>theme.body};
     margin-top: 40px;
     padding: 0.5rem;
     padding-top: 2rem;
@@ -20,7 +20,7 @@ export const StyledBody = styled.div`
   `
 
   export const StyledContainer = styled.div`
-    background-color: green;
+    
     width: 100%;
     height: 100%;
     border: 2px solid red;

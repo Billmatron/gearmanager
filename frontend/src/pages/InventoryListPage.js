@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {SpreadsheetHeader, SpreadSheetBody} from '../components/Spreadsheet'
 import { StyledToolBar} from '../components/styles/ToolBar.style'
-import {StyledDataHeader} from '../components/Header'
+import {StyledDataHeader} from '../header/Header'
 import {StyledSpreadsheetContainer} from '../components/Spreadsheet'
 import {ToolBarButton} from '../components/Buttons'
 import AuthContext from '../context/AuthContext';

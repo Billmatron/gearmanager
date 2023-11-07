@@ -8,7 +8,7 @@ export const StyledSidebarItem = styled.li`
     display: flex;
     
     margin-top: 0.5rem;
-    border-bottom: 1px solid ${({theme})=>theme.colors.base};
+    border-bottom: 1px solid ${({theme})=>theme.base};
     padding: 1rem;
     align-items: center;
     justify-content: space-between;
@@ -16,26 +16,26 @@ export const StyledSidebarItem = styled.li`
     &:hover{
         
         label, i{
-            color: ${({theme})=>theme.colors.action};
+            color: ${({theme})=>theme.action};
         }
     }
   
     & label {
-        color: ${({$active}) => $active ? ({theme})=>theme.colors.action : ({theme})=>theme.colors.base};
+        color: ${({$active}) => $active ? ({theme})=>theme.action : ({theme})=>theme.base};
         width: 100%;
         font-size: larger;
         font-weight: 600;
     }
 
     & i {
-        color:${({$active}) => $active ? ({theme})=>theme.colors.action : ({theme})=>theme.colors.base};
+        color:${({$active}) => $active ? ({theme})=>theme.action : ({theme})=>theme.base};
     }
 
     
 `
 export const StyledSidebar = styled.ol`
     /* flex: 0 0 10%; */
-    background-color: ${({theme})=>theme.colors.accent};
+    background-color: ${({theme})=>theme.accent};
     box-shadow: 5px 0px 10px gray;
     padding-top: 2rem;
     width: 200px;
@@ -75,7 +75,7 @@ export const StyledSidebar = styled.ol`
 
     /* Medium - tablets */
     @media only screen and (min-width: 769px) and (max-width: 1060px) {
-        width: 15%;
+        width: 10%;
         
         ${StyledSidebarItem}{
             display: block;
@@ -92,7 +92,7 @@ export const StyledSidebar = styled.ol`
     }
 
     /* Large - laptons */
-    @media only screen and (min-width: 1060px) {
+    @media only screen and (min-width: 1061px) {
         
        width: 200px
     }

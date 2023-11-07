@@ -7,8 +7,8 @@ import {StyledFlexDiv, StyledDiv} from './styles/Containers.style'
 import AuthContext from '../context/AuthContext'
 
 export const StyledFooter = styled.footer`
-    background-color: ${({theme}) => theme.colors.accent};
-    color:${({theme}) => theme.colors.base};
+    background-color: ${({theme}) => theme.accent};
+    color:${({theme}) => theme.base};
     grid-area: footer;
     min-height: 50px;
     max-height: 100px;
@@ -28,7 +28,7 @@ export const Footer = (props)=>{
 return(
     <StyledShadow>
         <StyledFooter>
-           <p>{user.email}</p>
+           <p>Email Goes here</p>
         </StyledFooter>
 
     </StyledShadow>
